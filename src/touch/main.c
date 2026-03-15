@@ -23,6 +23,8 @@
  * @endcode
  */
 
+ #define _CRT_SECURE_NO_WARNINGS
+
 #include <windows.h>
 #include <direct.h>
 #include <stdio.h>
@@ -227,7 +229,7 @@ void _timestamps(HANDLE hFile, Options* options)
         /* Parse the explicit timestamp string (format: YYYYMMDDhhmm) */
         sscanf(
             options->_timestamp,
-            "%04d%02d%02d%02d%02d",
+            "%04hd%02hd%02hd%02hd%02hd",
             &system_time.wYear,
             &system_time.wMonth,
             &system_time.wDay,

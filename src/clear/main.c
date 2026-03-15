@@ -19,15 +19,18 @@
  * screen sequence (\033[J). This is compatible with most modern
  * terminal emulators.
  *
- * @param argc Unused parameter. Included for compatibility.
- * @param argv Unused parameter. Included for compatibility.
+ * @param argc Unused (required by C runtime)
+ * @param argv Unused (required by C runtime)
  * @return Always returns 0 indicating successful execution
  *
  * @note This function assumes a compatible terminal that supports
  *       ANSI escape sequences
  */
-int main(int, char**)
+int main(int argc, char** argv)
 {
+    (void)argc;
+    (void)argv;
+    
     printf("\033[H\033[J");
 
     return 0;
