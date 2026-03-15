@@ -33,14 +33,25 @@
 #include <ctype.h>
 #include <errno.h>
 
+/**
+ * @defgroup SafeString Safe String Macros
+ * @brief Compiler-agnostic safe string operation macros
+ *
+ * Provides macros that wrap secure versions of string functions.
+ * Uses MSVC _s variants when compiled with MSVC, otherwise falls
+ * back to standard C99/C11 functions with manual null-termination.
+ *
+ * @{
+ */
+
+/* MSVC: Use the _s variants which provide bounds checking */
 #ifdef _MSC_VER
-    /* MSVC: Use the _s variants */
     #define SAFE_STRCPY(dst, dsz, src)       strcpy_s(dst, dsz, src)
     #define SAFE_STRNCPY(dst, src, n)        strncpy_s(dst, sizeof(dst), src, n)
-    #define SAFE_STRNCAT(dst, dsz, src, n)   strncat_s(dst, dsz, src, n)
+    #define SAFE_STRNCAT(dst, dsz, src)      strncat_s(dst, dsz, src, _TRUNCATE)
     #define SAFE_SSCANF(buf, fmt, ...)       sscanf_s(buf, fmt, __VA_ARGS__)
 #else
-    /* MinGW/GCC/Clang: Fallback to standard C99/C11 */
+    /* MinGW/GCC/Clang: Manual null-termination to prevent buffer overflow */
     #define SAFE_STRCPY(dst, dsz, src)      \
     do {                                    \
             strncpy(dst, src, dsz - 1);     \
@@ -48,22 +59,15 @@
     } while(0)
 
     #define SAFE_STRNCPY(dst, src, n)        strncpy(dst, src, n)
-
-    #define SAFE_STRNCAT(dst, dsz, src)             \
-    do {                                            \
-        strncat(dst, src, dsz - strlen(dst) - 1);   \
-    } while(0)
-
+    #define SAFE_STRNCAT(dst, dsz, src)      strncat(dst, src, (dsz) - strlen(dst) - 1)
     #define SAFE_SSCANF(buf, fmt, ...)       sscanf(buf, fmt, __VA_ARGS__)
 #endif
 
+ /** @} */
+
 /**
- * @defgroup ColorCodes ANSI Color Codes
- * @brief Terminal escape sequences for colored output
- *
- * These macros define ANSI escape sequences for formatting terminal
- * output with colors and text styling.
- *
+ * @defgroup ColorCodes Terminal Color Escape Sequences
+ * @brief ANSI escape codes for colored console output
  * @{
  */
 #define RESET   "\x1B[0m"   /**< Reset all formatting */
@@ -80,8 +84,8 @@
 /**
  * @brief Command-line options structure
  *
- * This structure holds all configurable options that can be passed
- * via the command line to modify the behavior of the touch utility.
+ * Holds configurable options passed via command line to modify
+ * touch utility behavior.
  */
 typedef struct
 {
