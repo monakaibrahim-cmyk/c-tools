@@ -52,4 +52,4 @@ cmake --build build
 
 This project uses GitHub Actions for continuous integration. The workflow builds the project using MinGW in Debug mode.
 
-See [`.github/workflows/build.yml`](.github/workflows/build.yml) for details.
+See [`./workflows/build.yml`](./workflows/build.yml) for details.

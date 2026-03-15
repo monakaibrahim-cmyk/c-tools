@@ -1,0 +1,490 @@
+\doxysection{D:\+/\+c-\/tools/\+src/\+touch/\+main.\+c}
+\hypertarget{_d_1_2c-tools_2src_2touch_2main_8c-example}{}\label{_d_1_2c-tools_2src_2touch_2main_8c-example}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{touch\ file.txt\ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Create\ file\ or\ update\ timestamp}}
+\DoxyCodeLine{touch\ -\/a\ file.txt\ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Change\ only\ access\ time}}
+\DoxyCodeLine{touch\ -\/m\ file.txt\ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Change\ only\ modification\ time}}
+\DoxyCodeLine{touch\ -\/c\ file.txt\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Do\ not\ create\ if\ file\ doesn't\ exist}}
+\DoxyCodeLine{touch\ -\/r\ ref.txt\ file.txt\ \ \textcolor{comment}{//\ Use\ timestamps\ from\ reference\ file}}
+\DoxyCodeLine{touch\ -\/t\ 202403151200\ file.txt\ \ \textcolor{comment}{//\ Use\ specific\ timestamp}}
+
+\end{DoxyCode}
+
+
+
+\begin{DoxyCodeInclude}{0}
+\DoxyCodeLine{}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include\ <windows.h>}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include\ <direct.h>}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include\ <stdio.h>}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include\ <stdlib.h>}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include\ <time.h>}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include\ <sys/stat.h>}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include\ <string.h>}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include\ <ctype.h>}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include\ <errno.h>}}
+\DoxyCodeLine{}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{/*\ MSVC:\ Use\ the\ \_s\ variants\ which\ provide\ bounds\ checking\ */}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#ifdef\ \_MSC\_VER}}
+\DoxyCodeLine{\textcolor{preprocessor}{\ \ \ \ \#define\ SAFE\_STRCPY(dst,\ dsz,\ src)\ \ \ \ \ \ \ strcpy\_s(dst,\ dsz,\ src)}}
+\DoxyCodeLine{\textcolor{preprocessor}{\ \ \ \ \#define\ SAFE\_STRNCPY(dst,\ src,\ n)\ \ \ \ \ \ \ \ strncpy\_s(dst,\ sizeof(dst),\ src,\ n)}}
+\DoxyCodeLine{\textcolor{preprocessor}{\ \ \ \ \#define\ SAFE\_STRNCAT(dst,\ dsz,\ src)\ \ \ \ \ \ strncat\_s(dst,\ dsz,\ src,\ \_TRUNCATE)}}
+\DoxyCodeLine{\textcolor{preprocessor}{\ \ \ \ \#define\ SAFE\_SSCANF(buf,\ fmt,\ ...)\ \ \ \ \ \ \ sscanf\_s(buf,\ fmt,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{/*\ MinGW/GCC/Clang:\ Manual\ null-\/termination\ to\ prevent\ buffer\ overflow\ */}}
+\DoxyCodeLine{\textcolor{preprocessor}{\ \ \ \ \#define\ SAFE\_STRCPY(dst,\ dsz,\ src)\ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\textcolor{preprocessor}{\ \ \ \ do\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ strncpy(dst,\ src,\ dsz\ -\/\ 1);\ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ (dst)[dsz\ -\/\ 1]\ =\ '\(\backslash\)0';\ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{\textcolor{preprocessor}{\ \ \ \ \}\ while(0)}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{preprocessor}{\ \ \ \ \#define\ SAFE\_STRNCPY(dst,\ src,\ n)\ \ \ \ \ \ \ \ strncpy(dst,\ src,\ n)}}
+\DoxyCodeLine{\textcolor{preprocessor}{\ \ \ \ \#define\ SAFE\_STRNCAT(dst,\ dsz,\ src)\ \ \ \ \ \ strncat(dst,\ src,\ (dsz)\ -\/\ strlen(dst)\ -\/\ 1)}}
+\DoxyCodeLine{\textcolor{preprocessor}{\ \ \ \ \#define\ SAFE\_SSCANF(buf,\ fmt,\ ...)\ \ \ \ \ \ \ sscanf(buf,\ fmt,\ \_\_VA\_ARGS\_\_)}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{preprocessor}{\#define\ RESET\ \ \ "{}\(\backslash\)x1B[0m"{}\ \ \ }\textcolor{preprocessor}{}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#define\ BLACK\ \ \ "{}\(\backslash\)x1B[30m"{}\ \ }\textcolor{preprocessor}{}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#define\ RED\ \ \ \ \ "{}\(\backslash\)x1B[31m"{}\ \ }\textcolor{preprocessor}{}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#define\ GREEN\ \ \ "{}\(\backslash\)x1B[32m"{}\ \ }\textcolor{preprocessor}{}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#define\ YELLOW\ \ "{}\(\backslash\)x1B[33m"{}\ \ }\textcolor{preprocessor}{}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#define\ BLUE\ \ \ \ "{}\(\backslash\)x1B[34m"{}\ \ }\textcolor{preprocessor}{}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#define\ MAGENTA\ "{}\(\backslash\)x1B[35m"{}\ \ }\textcolor{preprocessor}{}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#define\ CYAN\ \ \ \ "{}\(\backslash\)x1B[36m"{}\ \ }\textcolor{preprocessor}{}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#define\ WHITE\ \ \ "{}\(\backslash\)x1B[37m"{}\ \ }\textcolor{preprocessor}{}\textcolor{preprocessor}{}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{typedef}\ \textcolor{keyword}{struct}}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{int}\ \_atime\_only;\ \ \ \ \ \ }
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{int}\ \_mtime\_only;\ \ \ \ \ \ }
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{int}\ \_no\_create;\ \ \ \ \ \ \ }
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{int}\ \_no\_deref;\ \ \ \ \ \ \ \ }
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{char}*\ \_date;\ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{char}*\ \_ref\_file;\ \ \ \ \ \ }
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{char}*\ \_timestamp;\ \ \ \ \ }
+\DoxyCodeLine{\}\ \doxymbox{\hyperlink{struct_options}{Options}};}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{int}\ \doxymbox{\hyperlink{touch_2main_8c_a903460dd37c29f797924d4326c60551d}{recursive\_mkdir}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ path)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{char}\ temp[MAX\_PATH];}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{char}*\ p\ =\ NULL;}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{size\_t}\ length;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{/*\ Copy\ the\ input\ path\ to\ a\ temporary\ buffer\ to\ avoid\ modifying\ the\ original\ */}}
+\DoxyCodeLine{\ \ \ \ \doxymbox{\hyperlink{group___safe_string_ga8e1f6e1d4cb06669437ff6fa09ecca08}{SAFE\_STRNCPY}}(temp,\ path,\ MAX\_PATH);}
+\DoxyCodeLine{\ \ \ \ length\ =\ strlen(temp);}
+\DoxyCodeLine{\ \ \ \ }
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{/*\ Normalize\ all\ path\ separators\ to\ backslashes\ for\ Windows\ */}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{for}\ (p\ =\ temp;\ *p;\ p++)}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (*p\ ==\ \textcolor{charliteral}{'/'}\ ||\ *p\ ==\ \textcolor{charliteral}{'\(\backslash\)\(\backslash\)'})}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ *p\ =\ \textcolor{charliteral}{'\(\backslash\)\(\backslash\)'};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{/*\ Walk\ through\ the\ path\ and\ create\ each\ directory\ component\ */}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{for}\ (p\ =\ temp\ +\ 1;\ *p;\ p++)}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (*p\ ==\ \textcolor{charliteral}{'\(\backslash\)\(\backslash\)'})}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Temporarily\ terminate\ the\ string\ at\ this\ position\ */}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ *p\ =\ \textcolor{charliteral}{'\(\backslash\)0'};}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Attempt\ to\ create\ the\ directory\ */}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\_mkdir(temp)\ !=\ 0\ \&\&\ errno\ !=\ EEXIST)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Restore\ the\ separator\ and\ return\ error\ */}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *p\ =\ \textcolor{charliteral}{'\(\backslash\)\(\backslash\)'};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ -\/1;}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Restore\ the\ separator\ and\ continue\ */}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ *p\ =\ \textcolor{charliteral}{'\(\backslash\)\(\backslash\)'};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{/*\ Create\ the\ final\ directory\ in\ the\ path\ */}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (\_mkdir(temp)\ !=\ 0\ \&\&\ errno\ !=\ EEXIST)}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ -\/1;}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{int}\ \doxymbox{\hyperlink{touch_2main_8c_a1a694e6a22ec5fc0ed9598012c5bcc79}{\_absolute}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ path)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{/*\ Handle\ NULL\ or\ too-\/short\ strings\ as\ absolute\ for\ safety\ */}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (path\ ==\ NULL\ ||\ strlen(path)\ <\ 2)}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ 1;}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{/*\ Check\ for\ Windows\ drive\ letter\ (e.g.,\ C:)\ */}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (isalpha(path[0])\ \&\&\ path[1]\ ==\ \textcolor{charliteral}{':'})}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ 1;}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{/*\ Check\ for\ UNC\ path\ (e.g.,\ \(\backslash\)\(\backslash\)server\(\backslash\)share)\ */}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (path[0]\ ==\ \textcolor{charliteral}{'\(\backslash\)\(\backslash\)'}\ \&\&\ path[1]\ ==\ \textcolor{charliteral}{'\(\backslash\)\(\backslash\)'})}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ 1;}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{touch_2main_8c_a1ababf514c9a9490f70f238a03a2f8ae}{\_timestamps}}(HANDLE\ hFile,\ \doxymbox{\hyperlink{struct_options}{Options}}*\ options)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ FILETIME\ access,\ write;}
+\DoxyCodeLine{\ \ \ \ SYSTEMTIME\ system\_time;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{/*\ Determine\ the\ source\ of\ timestamps\ based\ on\ options\ */}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (options-\/>\doxymbox{\hyperlink{struct_options_a1461c40dcb66ad0a38661e455eaf8108}{\_ref\_file}})}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Open\ the\ reference\ file\ to\ copy\ its\ timestamps\ */}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ HANDLE\ hRef\ =\ CreateFile(}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ options-\/>\doxymbox{\hyperlink{struct_options_a1461c40dcb66ad0a38661e455eaf8108}{\_ref\_file}},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ GENERIC\_READ,}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ FILE\_SHARE\_READ,}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ NULL,\ OPEN\_EXISTING,}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ FILE\_ATTRIBUTE\_NORMAL,}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ NULL}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ );}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (hRef\ !=\ INVALID\_HANDLE\_VALUE)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Read\ timestamps\ from\ the\ reference\ file\ */}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ GetFileTime(hRef,\ NULL,\ \&access,\ \&write);}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ CloseHandle(hRef);}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (options-\/>\doxymbox{\hyperlink{struct_options_a74da69d120ab7413f2d226c135c13052}{\_timestamp}})}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Parse\ the\ explicit\ timestamp\ string\ (format:\ YYYYMMDDhhmm)\ */}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \doxymbox{\hyperlink{group___safe_string_gaf5781e1f08bd0755ba02c67f3d68b8c1}{SAFE\_SSCANF}}(}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ options-\/>\doxymbox{\hyperlink{struct_options_a74da69d120ab7413f2d226c135c13052}{\_timestamp}},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\%04hd\%02hd\%02hd\%02hd\%02hd"{}},}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \&system\_time.wYear,}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \&system\_time.wMonth,}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \&system\_time.wDay,}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \&system\_time.wHour,}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \&system\_time.wMinute}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ );}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Convert\ system\ time\ to\ file\ time\ format\ */}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ SystemTimeToFileTime(\&system\_time,\ \&access);}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ write\ =\ access;}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Use\ current\ system\ time\ for\ both\ timestamps\ */}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ GetSystemTimeAsFileTime(\&access);}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ write\ =\ access;}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{/*\ Apply\ timestamps\ based\ on\ options\ (atime\_only,\ mtime\_only,\ or\ both)\ */}}
+\DoxyCodeLine{\ \ \ \ FILETIME\ *pAccess\ =\ options-\/>\doxymbox{\hyperlink{struct_options_a4d08a7bb1840bf6c6864624efa4c34f0}{\_mtime\_only}}\ ?\ NULL\ :\ \&access;}
+\DoxyCodeLine{\ \ \ \ FILETIME\ *pWrite\ \ =\ options-\/>\doxymbox{\hyperlink{struct_options_ae3a7d798883a86946cbde9bf049060dd}{\_atime\_only}}\ ?\ NULL\ :\ \&write;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{/*\ Set\ the\ file\ timestamps\ */}}
+\DoxyCodeLine{\ \ \ \ SetFileTime(hFile,\ NULL,\ pAccess,\ pWrite);}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{touch_2main_8c_a8564beeedd1a1c1b25945c6bfce565b5}{\_help}}()}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ printf(\textcolor{stringliteral}{"{}Usage:\ \%stouch\%s\ [\%sOPTION\%s]\ \%sFile\%s\(\backslash\)n"{}},\ \doxymbox{\hyperlink{group___color_codes_gacfbc006ea433ad708fdee3e82996e721}{GREEN}},\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}},\ \doxymbox{\hyperlink{group___color_codes_gabf681265909adf3d3e8116c93c0ba179}{YELLOW}},\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}},\ \doxymbox{\hyperlink{group___color_codes_gabf681265909adf3d3e8116c93c0ba179}{YELLOW}},\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}});}
+\DoxyCodeLine{\ \ \ \ printf(\textcolor{stringliteral}{"{}\%s\%-\/10s\%s\ :\ \%s\(\backslash\)n"{}},\ \doxymbox{\hyperlink{group___color_codes_gabf681265909adf3d3e8116c93c0ba179}{YELLOW}},\ \textcolor{stringliteral}{"{}-\/a"{}},\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}},\ \textcolor{stringliteral}{"{}Change\ only\ the\ access\ time\ (atime)."{}});}
+\DoxyCodeLine{\ \ \ \ printf(\textcolor{stringliteral}{"{}\%s\%-\/10s\%s\ :\ \%s\(\backslash\)n"{}},\ \doxymbox{\hyperlink{group___color_codes_gabf681265909adf3d3e8116c93c0ba179}{YELLOW}},\ \textcolor{stringliteral}{"{}-\/m"{}},\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}},\ \textcolor{stringliteral}{"{}Change\ only\ the\ modification\ time\ (mtime)."{}});}
+\DoxyCodeLine{\ \ \ \ printf(\textcolor{stringliteral}{"{}\%s\%-\/10s\%s\ :\ \%s\(\backslash\)n"{}},\ \doxymbox{\hyperlink{group___color_codes_gabf681265909adf3d3e8116c93c0ba179}{YELLOW}},\ \textcolor{stringliteral}{"{}-\/c"{}},\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}},\ \textcolor{stringliteral}{"{}Do\ not\ create\ a\ new\ file\ if\ it\ does\ not\ already\ exist."{}});}
+\DoxyCodeLine{\ \ \ \ printf(\textcolor{stringliteral}{"{}\%s\%-\/10s\%s\ :\ \%s\(\backslash\)n"{}},\ \doxymbox{\hyperlink{group___color_codes_gabf681265909adf3d3e8116c93c0ba179}{YELLOW}},\ \textcolor{stringliteral}{"{}-\/h"{}},\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}},\ \textcolor{stringliteral}{"{}Affect\ each\ symbolic\ link\ instead\ of\ any\ referenced\ file."{}});}
+\DoxyCodeLine{\ \ \ \ printf(\textcolor{stringliteral}{"{}\%s\%-\/10s\%s\ :\ \%s\(\backslash\)n"{}},\ \doxymbox{\hyperlink{group___color_codes_gabf681265909adf3d3e8116c93c0ba179}{YELLOW}},\ \textcolor{stringliteral}{"{}-\/r\ FILE"{}},\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}},\ \textcolor{stringliteral}{"{}Use\ the\ specified\ FILE's\ timestamps\ instead\ of\ the\ current\ time."{}});}
+\DoxyCodeLine{\ \ \ \ printf(\textcolor{stringliteral}{"{}\%s\%-\/10s\%s\ :\ \%s\(\backslash\)n"{}},\ \doxymbox{\hyperlink{group___color_codes_gabf681265909adf3d3e8116c93c0ba179}{YELLOW}},\ \textcolor{stringliteral}{"{}-\/t\ STAMP"{}},\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}},\ \textcolor{stringliteral}{"{}Use\ a\ specific\ time\ STAMP\ in\ the\ format\ [[CC]YY]MMDDhhmm[.ss]."{}});}
+\DoxyCodeLine{\ \ \ \ printf(\textcolor{stringliteral}{"{}\%s\%-\/10s\%s\ :\ \%s\(\backslash\)n"{}},\ \doxymbox{\hyperlink{group___color_codes_gabf681265909adf3d3e8116c93c0ba179}{YELLOW}},\ \textcolor{stringliteral}{"{}-\/-\/help"{}},\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}},\ \textcolor{stringliteral}{"{}Display\ a\ help\ message\ and\ exit."{}});}
+\DoxyCodeLine{\ \ \ \ printf(\textcolor{stringliteral}{"{}\%s\%-\/10s\%s\ :\ \%s\(\backslash\)n"{}},\ \doxymbox{\hyperlink{group___color_codes_gabf681265909adf3d3e8116c93c0ba179}{YELLOW}},\ \textcolor{stringliteral}{"{}-\/-\/version"{}},\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}},\ \textcolor{stringliteral}{"{}Output\ version\ information\ and\ exit."{}});}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{touch_2main_8c_ae1a4fce1bb597e5e6a090b1dbb0326f2}{\_version}}()}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ time\_t\ now\ =\ time(NULL);}
+\DoxyCodeLine{\ \ \ \ \textcolor{keyword}{struct\ }tm*\ t\ =\ localtime(\&now);}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{int}\ current\ =\ t-\/>tm\_year\ +\ 1900;}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{int}\ last\ =\ t-\/>tm\_year\ +\ 1900\ -\/\ 1;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ version\ =\ \textcolor{stringliteral}{"{}1.0"{}};}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ printf(\textcolor{stringliteral}{"{}\%stouch\%s\ v\%s\(\backslash\)n"{}},\ \doxymbox{\hyperlink{group___color_codes_gacfbc006ea433ad708fdee3e82996e721}{GREEN}},\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}},\ version);}
+\DoxyCodeLine{\ \ \ \ printf(\textcolor{stringliteral}{"{}Copyright\ \%sGNU\ General\ Public\ License\ (GPL)\%s\ \%d-\/\%d\(\backslash\)n"{}},\ \doxymbox{\hyperlink{group___color_codes_gacfbc006ea433ad708fdee3e82996e721}{GREEN}},\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}},\ last,\ current);}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{int}\ \doxymbox{\hyperlink{clear_2main_8c_a3c04138a5bfe5d72780bb7e82a18e627}{main}}(\textcolor{keywordtype}{int}\ argc,\ \textcolor{keywordtype}{char}**\ argv)}
+\DoxyCodeLine{\{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{int}\ status\ =\ 0;}
+\DoxyCodeLine{\ \ \ \ HANDLE\ hFile\ =\ NULL;}
+\DoxyCodeLine{\ \ \ \ }
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{/*\ Allocate\ memory\ for\ options\ structure\ */}}
+\DoxyCodeLine{\ \ \ \ \doxymbox{\hyperlink{struct_options}{Options}}*\ options\ =\ malloc(\textcolor{keyword}{sizeof}(\doxymbox{\hyperlink{struct_options}{Options}}));}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{/*\ Check\ if\ memory\ allocation\ succeeded\ */}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (options\ ==\ NULL)}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ status\ =\ 1;}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{goto}\ FAILED\_MEMORY\_ALLOCATION;}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{/*\ Initialize\ all\ options\ to\ default\ values\ (zeros)\ */}}
+\DoxyCodeLine{\ \ \ \ memset(options,\ 0,\ \textcolor{keyword}{sizeof}(\doxymbox{\hyperlink{struct_options}{Options}}));}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{char}*\ target\ =\ NULL;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{/*\ Parse\ command-\/line\ arguments\ to\ identify\ options\ and\ target\ file\ */}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 1;\ i\ <\ argc;\ i++)}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{comment}{/*\ -\/a:\ Change\ only\ the\ access\ time\ */}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (strcmp(argv[i],\ \textcolor{stringliteral}{"{}-\/a"{}})\ ==\ 0)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ options-\/>\doxymbox{\hyperlink{struct_options_ae3a7d798883a86946cbde9bf049060dd}{\_atime\_only}}\ =\ 1;}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{comment}{/*\ -\/m:\ Change\ only\ the\ modification\ time\ */}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (strcmp(argv[i],\ \textcolor{stringliteral}{"{}-\/m"{}})\ ==\ 0)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ options-\/>\doxymbox{\hyperlink{struct_options_a4d08a7bb1840bf6c6864624efa4c34f0}{\_mtime\_only}}\ =\ 1;}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{comment}{/*\ -\/c/-\/-\/no-\/create:\ Do\ not\ create\ file\ if\ it\ doesn't\ exist\ */}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ ((strcmp(argv[i],\ \textcolor{stringliteral}{"{}-\/c"{}})\ ==\ 0)\ ||\ (strcmp(argv[i],\ \textcolor{stringliteral}{"{}-\/-\/no-\/create"{}})\ ==\ 0))}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ options-\/>\doxymbox{\hyperlink{struct_options_a886af48f6aed56271c8f4e4346936477}{\_no\_create}}\ =\ 1;}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{comment}{/*\ -\/d/-\/-\/date:\ Specify\ date\ string\ for\ timestamp\ */}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (strcmp(argv[i],\ \textcolor{stringliteral}{"{}-\/d"{}})\ ==\ 0\ ||\ strncmp(argv[i],\ \textcolor{stringliteral}{"{}-\/-\/date="{}},\ 7)\ ==\ 0)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ *value\ =\ (argv[i][0]\ ==\ \textcolor{charliteral}{'-\/'})\ ?\ (i\ +\ 1\ <\ argc\ ?\ argv[++i]\ :\ NULL)\ :\ (argv[i]\ +\ 7);}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ length\ =\ strlen(value)\ +\ 1;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (value\ ==\ NULL)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ printf(\textcolor{stringliteral}{"{}\%stouch\%s:\ option\ '\%s-\/d\%s|\%s-\/-\/date=\%s'\ requires\ an\ argument."{}},\ \doxymbox{\hyperlink{group___color_codes_gacfbc006ea433ad708fdee3e82996e721}{GREEN}},\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}},\ \doxymbox{\hyperlink{group___color_codes_gabf681265909adf3d3e8116c93c0ba179}{YELLOW}},\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}},\ \doxymbox{\hyperlink{group___color_codes_gabf681265909adf3d3e8116c93c0ba179}{YELLOW}},\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}});}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\ =\ 1;}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{goto}\ CLEANUP;}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Free\ existing\ date\ string\ if\ present\ */}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (options-\/>\doxymbox{\hyperlink{struct_options_a3ad15bf4169f59bd32293e20fe1a5abf}{\_date}}\ !=\ NULL)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ free(options-\/>\doxymbox{\hyperlink{struct_options_a3ad15bf4169f59bd32293e20fe1a5abf}{\_date}});}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Allocate\ and\ copy\ the\ date\ string\ */}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ ((options-\/>\doxymbox{\hyperlink{struct_options_a3ad15bf4169f59bd32293e20fe1a5abf}{\_date}}\ =\ malloc(length))\ ==\ NULL)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\ =\ 1;}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{goto}\ FAILED\_MEMORY\_ALLOCATION;}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ }
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{group___safe_string_ga94751d404d41b9a2cdd3d24efb858a32}{SAFE\_STRCPY}}(options-\/>\doxymbox{\hyperlink{struct_options_a3ad15bf4169f59bd32293e20fe1a5abf}{\_date}},\ length,\ value);}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{comment}{/*\ -\/h/-\/-\/no-\/dereference:\ Affect\ symbolic\ link\ instead\ of\ target\ */}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ ((strcmp(argv[i],\ \textcolor{stringliteral}{"{}-\/h"{}})\ ==\ 0)\ ||\ (strcmp(argv[i],\ \textcolor{stringliteral}{"{}-\/-\/no-\/dereference"{}})\ ==\ 0))}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ options-\/>\doxymbox{\hyperlink{struct_options_aeac6d0216cd757e9f8253d5263b7da43}{\_no\_deref}}\ =\ 1;}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{comment}{/*\ -\/r/-\/-\/reference:\ Use\ timestamps\ from\ reference\ file\ */}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (strcmp(argv[i],\ \textcolor{stringliteral}{"{}-\/r"{}})\ ==\ 0\ ||\ strncmp(argv[i],\ \textcolor{stringliteral}{"{}-\/-\/reference="{}},\ 12)\ ==\ 0)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ *value\ =\ (argv[i][0]\ ==\ \textcolor{charliteral}{'-\/'})\ ?\ (i\ +\ 1\ <\ argc\ ?\ argv[++i]\ :\ NULL)\ :\ (argv[i]\ +\ 12);}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ length\ =\ strlen(value)\ +\ 1;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (value\ ==\ NULL)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ printf(\textcolor{stringliteral}{"{}\%stouch\%s:\ option\ '\%s-\/r\%s|\%s-\/-\/reference=\%s'\ requires\ an\ argument."{}},\ \doxymbox{\hyperlink{group___color_codes_gacfbc006ea433ad708fdee3e82996e721}{GREEN}},\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}},\ \doxymbox{\hyperlink{group___color_codes_gabf681265909adf3d3e8116c93c0ba179}{YELLOW}},\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}},\ \doxymbox{\hyperlink{group___color_codes_gabf681265909adf3d3e8116c93c0ba179}{YELLOW}},\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}});}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\ =\ 1;}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{goto}\ CLEANUP;}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Free\ existing\ reference\ file\ string\ if\ present\ */}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (options-\/>\doxymbox{\hyperlink{struct_options_a1461c40dcb66ad0a38661e455eaf8108}{\_ref\_file}}\ !=\ NULL)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ free(options-\/>\doxymbox{\hyperlink{struct_options_a1461c40dcb66ad0a38661e455eaf8108}{\_ref\_file}});}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Allocate\ and\ copy\ the\ reference\ file\ path\ */}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ ((options-\/>\doxymbox{\hyperlink{struct_options_a1461c40dcb66ad0a38661e455eaf8108}{\_ref\_file}}\ =\ malloc(length))\ ==\ NULL)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\ =\ 1;}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{goto}\ FAILED\_MEMORY\_ALLOCATION;}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{group___safe_string_ga94751d404d41b9a2cdd3d24efb858a32}{SAFE\_STRCPY}}(options-\/>\doxymbox{\hyperlink{struct_options_a1461c40dcb66ad0a38661e455eaf8108}{\_ref\_file}},\ length,\ value);}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{comment}{/*\ -\/t:\ Use\ specific\ timestamp\ (format:\ [[CC]YY]MMDDhhmm[.ss])\ */}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (strcmp(argv[i],\ \textcolor{stringliteral}{"{}-\/t"{}})\ ==\ 0)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (++i\ >=\ argc)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ printf(\textcolor{stringliteral}{"{}\%stouch\%s:\ option\ '\%s-\/t\%s'\ requires\ an\ argument."{}},\ \doxymbox{\hyperlink{group___color_codes_gacfbc006ea433ad708fdee3e82996e721}{GREEN}},\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}},\ \doxymbox{\hyperlink{group___color_codes_gabf681265909adf3d3e8116c93c0ba179}{YELLOW}},\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}});}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\ =\ 1;}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{goto}\ CLEANUP;}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}*\ value\ =\ argv[++i];}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ length\ =\ strlen(value)\ +\ 1;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (options-\/>\doxymbox{\hyperlink{struct_options_a74da69d120ab7413f2d226c135c13052}{\_timestamp}})}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ free(options-\/>\doxymbox{\hyperlink{struct_options_a74da69d120ab7413f2d226c135c13052}{\_timestamp}});}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ options-\/>\doxymbox{\hyperlink{struct_options_a74da69d120ab7413f2d226c135c13052}{\_timestamp}}\ =\ malloc(length);}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!options-\/>\doxymbox{\hyperlink{struct_options_a74da69d120ab7413f2d226c135c13052}{\_timestamp}})}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ status\ =\ 1;}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{goto}\ FAILED\_MEMORY\_ALLOCATION;}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{group___safe_string_ga94751d404d41b9a2cdd3d24efb858a32}{SAFE\_STRCPY}}(options-\/>\doxymbox{\hyperlink{struct_options_a74da69d120ab7413f2d226c135c13052}{\_timestamp}},\ length,\ value);}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{comment}{/*\ -\/-\/help:\ Display\ help\ information\ */}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (strcmp(argv[i],\ \textcolor{stringliteral}{"{}-\/-\/help"{}})\ ==\ 0)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{touch_2main_8c_a8564beeedd1a1c1b25945c6bfce565b5}{\_help}}();}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{goto}\ CLEANUP;}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{comment}{/*\ -\/-\/version:\ Display\ version\ information\ */}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (strcmp(argv[i],\ \textcolor{stringliteral}{"{}-\/-\/version"{}})\ ==\ 0)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{touch_2main_8c_ae1a4fce1bb597e5e6a090b1dbb0326f2}{\_version}}();}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{goto}\ CLEANUP;}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Assume\ positional\ argument\ is\ the\ target\ file\ */}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (argv[i][0]\ !=\ \textcolor{charliteral}{'-\/'})}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ target\ =\ argv[i];}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{/*\ Validate\ that\ a\ target\ file\ was\ provided\ */}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (!target)}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ printf(\textcolor{stringliteral}{"{}Usage:\ \%stouch\%s\ [\%sOPTION\%s]\ \%sFILE\%s"{}},\ \doxymbox{\hyperlink{group___color_codes_gacfbc006ea433ad708fdee3e82996e721}{GREEN}},\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}},\ \doxymbox{\hyperlink{group___color_codes_gabf681265909adf3d3e8116c93c0ba179}{YELLOW}},\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}},\ \doxymbox{\hyperlink{group___color_codes_gabf681265909adf3d3e8116c93c0ba179}{YELLOW}},\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}});}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ status\ =\ 1;}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{goto}\ CLEANUP;}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{char}\ path[MAX\_PATH];}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{/*\ Build\ the\ full\ path\ -\/\ absolute\ paths\ are\ used\ as-\/is,\ relative\ paths\ are\ prefixed\ with\ current\ directory\ */}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (\doxymbox{\hyperlink{touch_2main_8c_a1a694e6a22ec5fc0ed9598012c5bcc79}{\_absolute}}(target))}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Use\ the\ target\ path\ directly\ for\ absolute\ paths\ */}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \doxymbox{\hyperlink{group___safe_string_ga8e1f6e1d4cb06669437ff6fa09ecca08}{SAFE\_STRNCPY}}(path,\ target,\ MAX\_PATH\ -\/\ 1);}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ path[\textcolor{keyword}{sizeof}(MAX\_PATH)\ -\/\ 1]\ =\ \textcolor{charliteral}{'\(\backslash\)0'};}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Get\ current\ directory\ and\ append\ the\ relative\ path\ */}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ GetCurrentDirectory(MAX\_PATH,\ path);}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \doxymbox{\hyperlink{group___safe_string_ga1507054810cd7669fd0d588975ee83a0}{SAFE\_STRNCAT}}(path,\ MAX\_PATH,\ \textcolor{stringliteral}{"{}\(\backslash\)\(\backslash\)"{}});}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \doxymbox{\hyperlink{group___safe_string_ga1507054810cd7669fd0d588975ee83a0}{SAFE\_STRNCAT}}(path,\ MAX\_PATH,\ target);}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{/*\ Normalize\ all\ forward\ slashes\ to\ backslashes\ for\ Windows\ */}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ path[i];\ i++)}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (path[i]\ ==\ \textcolor{charliteral}{'/'})}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ path[i]\ =\ \textcolor{charliteral}{'\(\backslash\)\(\backslash\)'};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{/*\ Extract\ directory\ portion\ from\ the\ full\ path\ */}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{char}\ dir[MAX\_PATH];}
+\DoxyCodeLine{\ \ \ \ \doxymbox{\hyperlink{group___safe_string_ga8e1f6e1d4cb06669437ff6fa09ecca08}{SAFE\_STRNCPY}}(dir,\ path,\ MAX\_PATH\ -\/\ 1);}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{/*\ Find\ the\ last\ backslash\ to\ separate\ directory\ from\ filename\ */}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{char}*\ slash\ =\ strrchr(dir,\ \textcolor{charliteral}{'\(\backslash\)\(\backslash\)'});}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{/*\ Create\ parent\ directories\ if\ they\ don't\ exist\ */}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (slash\ !=\ NULL)}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Terminate\ the\ directory\ string\ at\ the\ last\ separator\ */}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ *slash\ =\ \textcolor{charliteral}{'\(\backslash\)0'};}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ }
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\doxymbox{\hyperlink{touch_2main_8c_a903460dd37c29f797924d4326c60551d}{recursive\_mkdir}}(dir)\ !=\ 0)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ printf(\textcolor{stringliteral}{"{}\%sError\%s:\ Could\ not\ create\ directory\ '\%s\%s\%s'."{}},\ \doxymbox{\hyperlink{grep_2main_8c_a8d23feea868a983c8c2b661e1e16972f}{RED}},\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}},\ \doxymbox{\hyperlink{group___color_codes_gabf681265909adf3d3e8116c93c0ba179}{YELLOW}},\ dir,\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}});}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ status\ =\ 1;}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{goto}\ CLEANUP;}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{/*\ Determine\ file\ creation\ parameters\ based\ on\ options\ */}}
+\DoxyCodeLine{\ \ \ \ DWORD\ flags\ =\ options-\/>\doxymbox{\hyperlink{struct_options_aeac6d0216cd757e9f8253d5263b7da43}{\_no\_deref}}\ ?\ FILE\_FLAG\_OPEN\_REPARSE\_POINT\ :\ 0;}
+\DoxyCodeLine{\ \ \ \ DWORD\ disp\ =\ options-\/>\doxymbox{\hyperlink{struct_options_a886af48f6aed56271c8f4e4346936477}{\_no\_create}}\ ?\ OPEN\_EXISTING\ :\ OPEN\_ALWAYS;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{preprocessor}{\#ifdef\ DEBUG}}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{/*\ Debug\ output\ to\ trace\ file\ path\ */}}
+\DoxyCodeLine{\ \ \ \ printf(\textcolor{stringliteral}{"{}DEBUG:\ Attempting\ to\ create\ at:\ \%s\(\backslash\)n"{}},\ path);}
+\DoxyCodeLine{\textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{/*\ Create\ or\ open\ the\ target\ file\ */}}
+\DoxyCodeLine{\ \ \ \ hFile\ =\ CreateFile(}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ path,}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ FILE\_WRITE\_ATTRIBUTES,}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ FILE\_SHARE\_READ\ |\ FILE\_SHARE\_WRITE,\ }
+\DoxyCodeLine{\ \ \ \ \ \ \ \ NULL,}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ disp,}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ FILE\_ATTRIBUTE\_NORMAL\ |\ flags,}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ NULL}
+\DoxyCodeLine{\ \ \ \ );}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{/*\ Check\ if\ file\ creation/opening\ succeeded\ */}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (hFile\ ==\ INVALID\_HANDLE\_VALUE)}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{comment}{/*\ If\ -\/c\ option\ was\ used\ and\ file\ doesn't\ exist,\ that's\ OK\ */}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (options-\/>\doxymbox{\hyperlink{struct_options_a886af48f6aed56271c8f4e4346936477}{\_no\_create}})}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{goto}\ CLEANUP;}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Report\ error\ for\ other\ failure\ cases\ */}}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ printf(\textcolor{stringliteral}{"{}\%sError\%s:\ Cannot\ open/create\ file.\ Code:\ \%s\%lu\%s\(\backslash\)n"{}},\ \doxymbox{\hyperlink{grep_2main_8c_a8d23feea868a983c8c2b661e1e16972f}{RED}},\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}},\ \doxymbox{\hyperlink{group___color_codes_gabf681265909adf3d3e8116c93c0ba179}{YELLOW}},\ GetLastError(),\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}});}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ status\ =\ 1;}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ \textcolor{keywordflow}{goto}\ CLEANUP;}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{/*\ Apply\ timestamps\ to\ the\ file\ */}}
+\DoxyCodeLine{\ \ \ \ \doxymbox{\hyperlink{touch_2main_8c_a1ababf514c9a9490f70f238a03a2f8ae}{\_timestamps}}(hFile,\ options);}
+\DoxyCodeLine{\ \ \ \ printf(\textcolor{stringliteral}{"{}Touched:\ \%s\%s\%s"{}},\ \doxymbox{\hyperlink{group___color_codes_gacfbc006ea433ad708fdee3e82996e721}{GREEN}},\ argv[1],\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}});}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{goto}\ CLEANUP;}
+\DoxyCodeLine{}
+\DoxyCodeLine{FAILED\_MEMORY\_ALLOCATION:}
+\DoxyCodeLine{\ \ \ \ printf(\textcolor{stringliteral}{"{}\%sMemory\ allocation\ failed!\%s"{}},\ \doxymbox{\hyperlink{grep_2main_8c_a8d23feea868a983c8c2b661e1e16972f}{RED}},\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}});}
+\DoxyCodeLine{}
+\DoxyCodeLine{CLEANUP:}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{/*\ Close\ the\ file\ handle\ if\ it\ was\ opened\ */}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (hFile\ !=\ INVALID\_HANDLE\_VALUE)}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ CloseHandle(hFile);}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ }
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{/*\ Free\ all\ allocated\ memory\ in\ the\ options\ structure\ */}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{if}\ (options)}
+\DoxyCodeLine{\ \ \ \ \{}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ free(options-\/>\doxymbox{\hyperlink{struct_options_a3ad15bf4169f59bd32293e20fe1a5abf}{\_date}});}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ free(options-\/>\doxymbox{\hyperlink{struct_options_a1461c40dcb66ad0a38661e455eaf8108}{\_ref\_file}});}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ free(options-\/>\doxymbox{\hyperlink{struct_options_a74da69d120ab7413f2d226c135c13052}{\_timestamp}});}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ free(options);}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ options\ =\ NULL;}
+\DoxyCodeLine{\ \ \ \ \}}
+\DoxyCodeLine{\ \ \ \ }
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{return}\ status;}
+\DoxyCodeLine{\}}
+
+\end{DoxyCodeInclude}
+ 

@@ -1,0 +1,112 @@
+\doxysection{Safe String Macros }
+\hypertarget{group___safe_string}{}\label{group___safe_string}\index{Safe String Macros@{Safe String Macros}}
+
+
+Compiler-\/agnostic safe string operation macros.  
+
+
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\+\#define \doxymbox{\hyperlink{group___safe_string_ga94751d404d41b9a2cdd3d24efb858a32}{SAFE\+\_\+\+STRCPY}}(dst,  dsz,  src)
+\item 
+\+\#define \doxymbox{\hyperlink{group___safe_string_ga8e1f6e1d4cb06669437ff6fa09ecca08}{SAFE\+\_\+\+STRNCPY}}(dst,  src,  n)
+\item 
+\+\#define \doxymbox{\hyperlink{group___safe_string_ga1507054810cd7669fd0d588975ee83a0}{SAFE\+\_\+\+STRNCAT}}(dst,  dsz,  src)
+\item 
+\+\#define \doxymbox{\hyperlink{group___safe_string_gaf5781e1f08bd0755ba02c67f3d68b8c1}{SAFE\+\_\+\+SSCANF}}(buf,  fmt, ...)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Compiler-\/agnostic safe string operation macros. 
+
+Provides macros that wrap secure versions of string functions. Uses MSVC \+\_\+s variants when compiled with MSVC, otherwise falls back to standard C99/\+\+C11 functions with manual null-\/termination. 
+
+\label{doc-define-members}
+\Hypertarget{group___safe_string_doc-define-members}
+\doxysubsection{Macro Definition Documentation}
+\Hypertarget{group___safe_string_gaf5781e1f08bd0755ba02c67f3d68b8c1}\index{Safe String Macros@{Safe String Macros}!SAFE\_SSCANF@{SAFE\_SSCANF}}
+\index{SAFE\_SSCANF@{SAFE\_SSCANF}!Safe String Macros@{Safe String Macros}}
+\doxysubsubsection{\texorpdfstring{SAFE\_SSCANF}{SAFE\_SSCANF}}
+{\footnotesize\ttfamily \label{group___safe_string_gaf5781e1f08bd0755ba02c67f3d68b8c1} 
+\+\#define SAFE\+\_\+\+SSCANF(\begin{DoxyParamCaption}\item[{}]{buf}{, }\item[{}]{fmt}{, }\item[{}]{}...{}\end{DoxyParamCaption})}
+
+{\bfseries Value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{sscanf(buf,\ fmt,\ \_\_VA\_ARGS\_\_)}
+
+\end{DoxyCode}
+\begin{Desc}
+\item[Examples]\par
+\doxymbox{\hyperlink{_d_1_2c-tools_2src_2touch_2main_8c-example}{D:\+/\+c-\/tools/\+src/\+touch/\+main.\+c}}.\end{Desc}
+
+
+Definition at line \doxymbox{\hyperlink{touch_2main_8c_source_l00063}{63}} of file \doxymbox{\hyperlink{touch_2main_8c_source}{main.\+c}}.
+
+\Hypertarget{group___safe_string_ga94751d404d41b9a2cdd3d24efb858a32}\index{Safe String Macros@{Safe String Macros}!SAFE\_STRCPY@{SAFE\_STRCPY}}
+\index{SAFE\_STRCPY@{SAFE\_STRCPY}!Safe String Macros@{Safe String Macros}}
+\doxysubsubsection{\texorpdfstring{SAFE\_STRCPY}{SAFE\_STRCPY}}
+{\footnotesize\ttfamily \label{group___safe_string_ga94751d404d41b9a2cdd3d24efb858a32} 
+\+\#define SAFE\+\_\+\+STRCPY(\begin{DoxyParamCaption}\item[{}]{dst}{, }\item[{}]{dsz}{, }\item[{}]{src}{}\end{DoxyParamCaption})}
+
+{\bfseries Value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordflow}{do}\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ strncpy(dst,\ src,\ dsz\ -\/\ 1);\ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ (dst)[dsz\ -\/\ 1]\ =\ \textcolor{charliteral}{'\(\backslash\)0'};\ \ \ \ \ \ \ \ \ \ \(\backslash\)}
+\DoxyCodeLine{\}\ \textcolor{keywordflow}{while}(0)}
+
+\end{DoxyCode}
+\begin{Desc}
+\item[Examples]\par
+\doxymbox{\hyperlink{_d_1_2c-tools_2src_2touch_2main_8c-example}{D:\+/\+c-\/tools/\+src/\+touch/\+main.\+c}}.\end{Desc}
+
+
+Definition at line \doxymbox{\hyperlink{touch_2main_8c_source_l00055}{55}} of file \doxymbox{\hyperlink{touch_2main_8c_source}{main.\+c}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00055\ \textcolor{preprocessor}{\ \ \ \ \#define\ SAFE\_STRCPY(dst,\ dsz,\ src)\ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00056\ \textcolor{preprocessor}{\ \ \ \ do\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00057\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ strncpy(dst,\ src,\ dsz\ -\/\ 1);\ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00058\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ (dst)[dsz\ -\/\ 1]\ =\ '\(\backslash\)0';\ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{00059\ \textcolor{preprocessor}{\ \ \ \ \}\ while(0)}}
+
+\end{DoxyCode}
+\Hypertarget{group___safe_string_ga1507054810cd7669fd0d588975ee83a0}\index{Safe String Macros@{Safe String Macros}!SAFE\_STRNCAT@{SAFE\_STRNCAT}}
+\index{SAFE\_STRNCAT@{SAFE\_STRNCAT}!Safe String Macros@{Safe String Macros}}
+\doxysubsubsection{\texorpdfstring{SAFE\_STRNCAT}{SAFE\_STRNCAT}}
+{\footnotesize\ttfamily \label{group___safe_string_ga1507054810cd7669fd0d588975ee83a0} 
+\+\#define SAFE\+\_\+\+STRNCAT(\begin{DoxyParamCaption}\item[{}]{dst}{, }\item[{}]{dsz}{, }\item[{}]{src}{}\end{DoxyParamCaption})}
+
+{\bfseries Value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{strncat(dst,\ src,\ (dsz)\ -\/\ strlen(dst)\ -\/\ 1)}
+
+\end{DoxyCode}
+\begin{Desc}
+\item[Examples]\par
+\doxymbox{\hyperlink{_d_1_2c-tools_2src_2touch_2main_8c-example}{D:\+/\+c-\/tools/\+src/\+touch/\+main.\+c}}.\end{Desc}
+
+
+Definition at line \doxymbox{\hyperlink{touch_2main_8c_source_l00062}{62}} of file \doxymbox{\hyperlink{touch_2main_8c_source}{main.\+c}}.
+
+\Hypertarget{group___safe_string_ga8e1f6e1d4cb06669437ff6fa09ecca08}\index{Safe String Macros@{Safe String Macros}!SAFE\_STRNCPY@{SAFE\_STRNCPY}}
+\index{SAFE\_STRNCPY@{SAFE\_STRNCPY}!Safe String Macros@{Safe String Macros}}
+\doxysubsubsection{\texorpdfstring{SAFE\_STRNCPY}{SAFE\_STRNCPY}}
+{\footnotesize\ttfamily \label{group___safe_string_ga8e1f6e1d4cb06669437ff6fa09ecca08} 
+\+\#define SAFE\+\_\+\+STRNCPY(\begin{DoxyParamCaption}\item[{}]{dst}{, }\item[{}]{src}{, }\item[{}]{n}{}\end{DoxyParamCaption})}
+
+{\bfseries Value:\+}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{strncpy(dst,\ src,\ n)}
+
+\end{DoxyCode}
+\begin{Desc}
+\item[Examples]\par
+\doxymbox{\hyperlink{_d_1_2c-tools_2src_2touch_2main_8c-example}{D:\+/\+c-\/tools/\+src/\+touch/\+main.\+c}}.\end{Desc}
+
+
+Definition at line \doxymbox{\hyperlink{touch_2main_8c_source_l00061}{61}} of file \doxymbox{\hyperlink{touch_2main_8c_source}{main.\+c}}.
+

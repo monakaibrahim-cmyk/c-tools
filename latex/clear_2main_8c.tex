@@ -1,0 +1,79 @@
+\doxysection{src/\+clear/\+main.c File Reference}
+\hypertarget{clear_2main_8c}{}\label{clear_2main_8c}\index{src/clear/main.c@{src/clear/main.c}}
+
+
+Clear screen utility.  
+
+
+{\ttfamily \+\#include $<$stdio.\+h$>$}\newline
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \doxymbox{\hyperlink{clear_2main_8c_a3c04138a5bfe5d72780bb7e82a18e627}{main}} (int argc, char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}argv)
+\begin{DoxyCompactList}\small\item\em Main entry point for the clear command. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Clear screen utility. 
+
+This utility clears the terminal screen by printing ANSI escape sequences. It provides a simple cross-\/platform way to clear the console output.
+
+\begin{DoxyAuthor}{Author}
+monakaibrahim-\/cmyk 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+1.\+0.\+0 
+\end{DoxyVersion}
+
+
+Definition in file \doxymbox{\hyperlink{clear_2main_8c_source}{main.\+c}}.
+
+
+
+\label{doc-func-members}
+\Hypertarget{clear_2main_8c_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{clear_2main_8c_a3c04138a5bfe5d72780bb7e82a18e627}\index{main.c@{main.c}!main@{main}}
+\index{main@{main}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily \label{clear_2main_8c_a3c04138a5bfe5d72780bb7e82a18e627} 
+int main (\begin{DoxyParamCaption}\item[{int}]{argc}{, }\item[{char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{argv}{}\end{DoxyParamCaption})}
+
+
+
+Main entry point for the clear command. 
+
+This function clears the terminal screen by sending the ANSI escape sequence for cursor home position (\textbackslash{}033\+[H) followed by the clear screen sequence (\textbackslash{}033\+[J). This is compatible with most modern terminal emulators.
+
+
+\begin{DoxyParams}{Parameters}
+{\em argc} & Unused (required by C runtime) \\
+\hline
+{\em argv} & Unused (required by C runtime) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Always returns 0 indicating successful execution
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+This function assumes a compatible terminal that supports ANSI escape sequences 
+\end{DoxyNote}
+\begin{Desc}
+\item[Examples]\par
+\doxymbox{\hyperlink{_d_1_2c-tools_2src_2touch_2main_8c-example}{D:\+/\+c-\/tools/\+src/\+touch/\+main.\+c}}.\end{Desc}
+
+
+Definition at line \doxymbox{\hyperlink{clear_2main_8c_source_l00029}{29}} of file \doxymbox{\hyperlink{clear_2main_8c_source}{main.\+c}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00030\ \{}
+\DoxyCodeLine{00031\ \ \ \ \ (void)argc;}
+\DoxyCodeLine{00032\ \ \ \ \ (void)argv;}
+\DoxyCodeLine{00033\ \ \ \ \ }
+\DoxyCodeLine{00034\ \ \ \ \ printf(\textcolor{stringliteral}{"{}\(\backslash\)033[H\(\backslash\)033[J"{}});}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \ \ \ \ \textcolor{keywordflow}{return}\ 0;}
+\DoxyCodeLine{00037\ \}}
+
+\end{DoxyCode}

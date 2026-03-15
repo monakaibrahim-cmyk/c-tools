@@ -48,7 +48,7 @@ foreach(tool ${ALL_TOOLS})
     endif()
 
     if(MSVC)
-        target_compile_definitions(${tool} PRIVATE _CRT_SECURE_NO_WARNINGS)
+        # target_compile_definitions(${tool} PRIVATE _CRT_SECURE_NO_WARNINGS)
         target_compile_options(${tool} PRIVATE /std:c11)
     endif()
 

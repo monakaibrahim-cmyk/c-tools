@@ -1,0 +1,227 @@
+\doxysection{main.\+c}
+\hypertarget{tree_2main_8c_source}{}\label{tree_2main_8c_source}\index{src/tree/main.c@{src/tree/main.c}}
+\doxymbox{\hyperlink{tree_2main_8c}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00001}00001\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00030}00030\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00031}00031\ \textcolor{preprocessor}{\#include\ <windows.h>}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00032}00032\ \textcolor{preprocessor}{\#include\ <stdio.h>}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00033}00033\ \textcolor{preprocessor}{\#include\ <stdlib.h>}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00034}00034\ \textcolor{preprocessor}{\#include\ <string.h>}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00035}00035\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00041}00041\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00042}00042\ \textcolor{comment}{/*\ Text\ color\ codes\ -\/\ prefix\ with\ color\ macro,\ suffix\ with\ RESET\ to\ restore\ default\ */}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00043}\doxymbox{\hyperlink{group___color_codes_ga7b3b25cba33b07c303f3060fe41887f6}{00043}}\ \textcolor{preprocessor}{\#define\ BLACK\ \ \ "{}\(\backslash\)x1B[30m"{}}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00044}\doxymbox{\hyperlink{group___color_codes_ga8d23feea868a983c8c2b661e1e16972f}{00044}}\ \textcolor{preprocessor}{\#define\ RED\ \ \ \ \ "{}\(\backslash\)x1B[31m"{}}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00045}\doxymbox{\hyperlink{group___color_codes_gacfbc006ea433ad708fdee3e82996e721}{00045}}\ \textcolor{preprocessor}{\#define\ GREEN\ \ \ "{}\(\backslash\)x1B[32m"{}}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00046}\doxymbox{\hyperlink{group___color_codes_gabf681265909adf3d3e8116c93c0ba179}{00046}}\ \textcolor{preprocessor}{\#define\ YELLOW\ \ "{}\(\backslash\)x1B[33m"{}}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00047}\doxymbox{\hyperlink{group___color_codes_ga79d10e672abb49ad63eeaa8aaef57c38}{00047}}\ \textcolor{preprocessor}{\#define\ BLUE\ \ \ \ "{}\(\backslash\)x1B[34m"{}}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00048}\doxymbox{\hyperlink{group___color_codes_ga6f699060902f800f12aaae150f3a708e}{00048}}\ \textcolor{preprocessor}{\#define\ MAGENTA\ "{}\(\backslash\)x1B[35m"{}}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00049}\doxymbox{\hyperlink{group___color_codes_gad243f93c16bc4c1d3e0a13b84421d760}{00049}}\ \textcolor{preprocessor}{\#define\ CYAN\ \ \ \ "{}\(\backslash\)x1B[36m"{}}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00050}\doxymbox{\hyperlink{group___color_codes_ga87b537f5fa5c109d3c05c13d6b18f382}{00050}}\ \textcolor{preprocessor}{\#define\ WHITE\ \ \ "{}\(\backslash\)x1B[37m"{}}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00051}\doxymbox{\hyperlink{group___color_codes_gab702106cf3b3e96750b6845ded4e0299}{00051}}\ \textcolor{preprocessor}{\#define\ RESET\ \ \ "{}\(\backslash\)x1B[0m"{}\ \ \ }\textcolor{preprocessor}{}\textcolor{preprocessor}{}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00053}00053\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00060}\doxymbox{\hyperlink{struct_node}{00060}}\ \textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{struct_node}{Node}}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00061}00061\ \{}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00062}\doxymbox{\hyperlink{struct_node_a2c9a10f4486a742d8c0a2ead0b7253dd}{00062}}\ \ \ \ \ WIN32\_FIND\_DATA\ \doxymbox{\hyperlink{struct_node_a2c9a10f4486a742d8c0a2ead0b7253dd}{data}};\ \ \ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00063}\doxymbox{\hyperlink{struct_node_af67b110ca1a258b793bf69d306929b22}{00063}}\ \ \ \ \ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{struct_node}{Node}}*\ \doxymbox{\hyperlink{struct_node_af67b110ca1a258b793bf69d306929b22}{next}};\ \ \ \ \ \ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00064}\doxymbox{\hyperlink{tree_2main_8c_a3b09f37e675bcd48a01bf22155996872}{00064}}\ \}\ \doxymbox{\hyperlink{struct_node}{Node}};}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00065}00065\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00074}\doxymbox{\hyperlink{tree_2main_8c_ab85b64b7d29d0831d9042a7c7336f472}{00074}}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{tree_2main_8c_ab85b64b7d29d0831d9042a7c7336f472}{free\_list}}(\doxymbox{\hyperlink{struct_node}{Node}}*\ head)}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00075}00075\ \{}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00076}00076\ \ \ \ \ \textcolor{comment}{/*\ Traverse\ the\ linked\ list\ and\ free\ each\ node\ to\ prevent\ memory\ leaks\ */}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00077}00077\ \ \ \ \ \textcolor{keywordflow}{while}\ (head)}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00078}00078\ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00079}00079\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_node}{Node}}*\ temp\ =\ head;}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00080}00080\ \ \ \ \ \ \ \ \ head\ =\ head-\/>\doxymbox{\hyperlink{struct_node_af67b110ca1a258b793bf69d306929b22}{next}};}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00081}00081\ \ \ \ \ \ \ \ \ free(temp);}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00082}00082\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00083}00083\ \}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00084}00084\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00100}\doxymbox{\hyperlink{tree_2main_8c_a8bd8eed13cba2a3a92242f968bf88bad}{00100}}\ \textcolor{keywordtype}{void}\ \doxymbox{\hyperlink{tree_2main_8c_a8bd8eed13cba2a3a92242f968bf88bad}{list\_dir}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ base,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ prefix,\ \textcolor{keywordtype}{int}*\ file\_count,\ \textcolor{keywordtype}{int}*\ dir\_count)}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00101}00101\ \{}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00102}00102\ \ \ \ \ \textcolor{comment}{/*\ Construct\ search\ pattern:\ base\_path\(\backslash\)*\ to\ enumerate\ all\ entries\ */}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00103}00103\ \ \ \ \ \textcolor{keywordtype}{char}\ search\_path[MAX\_PATH];}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00104}00104\ \ \ \ \ \textcolor{keywordtype}{int}\ sp\_len\ =\ snprintf(search\_path,\ MAX\_PATH,\ \textcolor{stringliteral}{"{}\%s\(\backslash\)\(\backslash\)*"{}},\ base);}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00105}00105\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00106}00106\ \ \ \ \ \textcolor{keywordflow}{if}\ (sp\_len\ <\ 0\ ||\ sp\_len\ >=\ MAX\_PATH)}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00107}00107\ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00108}00108\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00109}00109\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00110}00110\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00111}00111\ \ \ \ \ \textcolor{comment}{/*\ Initialize\ Windows\ FindFirstFile\ to\ begin\ enumeration\ */}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00112}00112\ \ \ \ \ WIN32\_FIND\_DATA\ ffd;}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00113}00113\ \ \ \ \ HANDLE\ hFind\ =\ FindFirstFile(search\_path,\ \&ffd);}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00114}00114\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00115}00115\ \ \ \ \ \textcolor{keywordflow}{if}\ (hFind\ ==\ INVALID\_HANDLE\_VALUE)}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00116}00116\ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00117}00117\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00118}00118\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00119}00119\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00120}00120\ \ \ \ \ \textcolor{comment}{/*\ Build\ a\ linked\ list\ of\ directory\ entries\ first\ (batch\ collection)}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00121}00121\ \textcolor{comment}{\ \ \ \ \ *\ This\ separates\ enumeration\ from\ processing,\ allowing\ sorted\ output\ */}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00122}00122\ \ \ \ \ \doxymbox{\hyperlink{struct_node}{Node}}\ *head\ =\ NULL,\ *tail\ =\ NULL;}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00123}00123\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00124}00124\ \ \ \ \ \textcolor{keywordflow}{do}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00125}00125\ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00126}00126\ \ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Skip\ special\ directory\ references:\ "{}."{}\ (current)\ and\ "{}.."{}\ (parent)\ */}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00127}00127\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (strcmp(ffd.cFileName,\ \textcolor{stringliteral}{"{}."{}})\ ==\ 0\ ||\ strcmp(ffd.cFileName,\ \textcolor{stringliteral}{"{}.."{}})\ ==\ 0)}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00128}00128\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00129}00129\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00130}00130\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00131}00131\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00132}00132\ \ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Allocate\ new\ node\ to\ store\ this\ directory\ entry\ */}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00133}00133\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_node}{Node}}*\ new\_node\ =\ (\doxymbox{\hyperlink{struct_node}{Node}}*)malloc(\textcolor{keyword}{sizeof}(\doxymbox{\hyperlink{struct_node}{Node}}));}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00134}00134\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00135}00135\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!new\_node)}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00136}00136\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00137}00137\ \ \ \ \ \ \ \ \ \ \ \ \ fprintf(stderr,\ \textcolor{stringliteral}{"{}Error:\ Memory\ exhausted\ while\ enumerating\ "{}}\ \doxymbox{\hyperlink{group___color_codes_gabf681265909adf3d3e8116c93c0ba179}{YELLOW}}\ \textcolor{stringliteral}{"{}'\%s'\ "{}}\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}}\ \textcolor{stringliteral}{"{}.\ Output\ may\ be\ incomplete.\(\backslash\)n"{}},\ base);}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00138}00138\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00139}00139\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00140}00140\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00141}00141\ \ \ \ \ \ \ \ \ new\_node-\/>\doxymbox{\hyperlink{struct_node_a2c9a10f4486a742d8c0a2ead0b7253dd}{data}}\ =\ ffd;}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00142}00142\ \ \ \ \ \ \ \ \ new\_node-\/>\doxymbox{\hyperlink{struct_node_af67b110ca1a258b793bf69d306929b22}{next}}\ =\ NULL;}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00143}00143\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00144}00144\ \ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Append\ to\ linked\ list\ (tail\ insertion\ for\ O(1)\ append)\ */}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00145}00145\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!head)}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00146}00146\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00147}00147\ \ \ \ \ \ \ \ \ \ \ \ \ head\ =\ tail\ =\ new\_node;}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00148}00148\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00149}00149\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00150}00150\ \ \ \ \ \ \ \ \ \{\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00151}00151\ \ \ \ \ \ \ \ \ \ \ \ \ tail-\/>next\ =\ new\_node;}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00152}00152\ \ \ \ \ \ \ \ \ \ \ \ \ tail\ =\ new\_node;}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00153}00153\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00154}00154\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00155}00155\ \ \ \ \ \textcolor{keywordflow}{while}\ (FindNextFile(hFind,\ \&ffd));}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00156}00156\ \ \ \ \ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00157}00157\ \ \ \ \ \textcolor{comment}{/*\ Close\ the\ find\ handle\ -\/\ no\ longer\ needed\ after\ enumeration\ */}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00158}00158\ \ \ \ \ FindClose(hFind);}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00159}00159\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00160}00160\ \ \ \ \ \textcolor{comment}{/*\ Process\ each\ entry\ in\ the\ linked\ list\ and\ display\ tree\ structure\ */}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00161}00161\ \ \ \ \ \doxymbox{\hyperlink{struct_node}{Node}}*\ current\ =\ head;}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00162}00162\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00163}00163\ \ \ \ \ \textcolor{keywordflow}{while}\ (current)}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00164}00164\ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00165}00165\ \ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Determine\ if\ this\ is\ the\ last\ entry\ for\ proper\ tree\ branch\ formatting:}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00166}00166\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ *\ ├──\ =\ not\ last,\ └──\ =\ last\ */}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00167}00167\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ is\_last\ =\ (current-\/>\doxymbox{\hyperlink{struct_node_af67b110ca1a258b793bf69d306929b22}{next}}\ ==\ NULL);}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00168}00168\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00169}00169\ \ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Print\ the\ tree\ branch\ prefix\ +\ filename\ in\ green\ color\ */}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00170}00170\ \ \ \ \ \ \ \ \ printf(\textcolor{stringliteral}{"{}\%s\%s\ "{}}\ \doxymbox{\hyperlink{group___color_codes_gacfbc006ea433ad708fdee3e82996e721}{GREEN}}\ \textcolor{stringliteral}{"{}\%s"{}}\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}}\ \textcolor{stringliteral}{"{}\(\backslash\)n"{}},\ prefix,\ is\_last\ ?\ \textcolor{stringliteral}{"{}└──"{}}\ :\ \textcolor{stringliteral}{"{}├──"{}},\ current-\/>\doxymbox{\hyperlink{struct_node_a2c9a10f4486a742d8c0a2ead0b7253dd}{data}}.cFileName);}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00171}00171\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00172}00172\ \ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Check\ if\ entry\ is\ a\ directory\ (vs\ file)\ using\ Windows\ attribute\ flags\ */}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00173}00173\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (current-\/>\doxymbox{\hyperlink{struct_node_a2c9a10f4486a742d8c0a2ead0b7253dd}{data}}.dwFileAttributes\ \&\ FILE\_ATTRIBUTE\_DIRECTORY)}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00174}00174\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00175}00175\ \ \ \ \ \ \ \ \ \ \ \ \ (*dir\_count)++;}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00176}00176\ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00177}00177\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Construct\ full\ path\ for\ recursive\ descent\ into\ subdirectory\ */}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00178}00178\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ next\_path[MAX\_PATH];}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00179}00179\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ path\_len\ =\ snprintf(next\_path,\ MAX\_PATH,\ \textcolor{stringliteral}{"{}\%s\(\backslash\)\(\backslash\)\%s"{}},\ base,\ current-\/>\doxymbox{\hyperlink{struct_node_a2c9a10f4486a742d8c0a2ead0b7253dd}{data}}.cFileName);}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00180}00180\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00181}00181\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (path\_len\ <\ 0\ ||\ path\_len\ >=\ MAX\_PATH)}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00182}00182\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00183}00183\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ fprintf(stderr,\ \textcolor{stringliteral}{"{}Error:\ Path\ too\ long:\ "{}}\ \doxymbox{\hyperlink{group___color_codes_gabf681265909adf3d3e8116c93c0ba179}{YELLOW}}\ \textcolor{stringliteral}{"{}'\%s'"{}}\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}}\ \textcolor{stringliteral}{"{}.\ Skipping.\(\backslash\)n"{}},\ current-\/>\doxymbox{\hyperlink{struct_node_a2c9a10f4486a742d8c0a2ead0b7253dd}{data}}.cFileName);}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00184}00184\ \ \ \ \ \ \ \ \ \ \ \ \ \}\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00185}00185\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00186}00186\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00187}00187\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Calculate\ prefix\ for\ next\ recursion\ level:}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00188}00188\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *\ -\/\ If\ last\ entry:\ use\ spaces\ "{}\ \ \ "{}\ (no\ vertical\ branch)}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00189}00189\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *\ -\/\ If\ not\ last:\ use\ "{}│"{}\ (vertical\ branch\ continues)\ */}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00190}00190\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ probe\ =\ snprintf(NULL,\ 0,\ \textcolor{stringliteral}{"{}\%s\%s\ \ \ "{}},\ prefix,\ is\_last\ ?\ \textcolor{stringliteral}{"{}\ "{}}\ :\ \textcolor{stringliteral}{"{}│"{}});}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00191}00191\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00192}00192\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (probe\ <\ 0)}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00193}00193\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00194}00194\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ fprintf(stderr,\ \textcolor{stringliteral}{"{}Error:\ Encoding\ failed\ for\ prefix\ at\ "{}}\ \doxymbox{\hyperlink{group___color_codes_gabf681265909adf3d3e8116c93c0ba179}{YELLOW}}\ \textcolor{stringliteral}{"{}'\%s'"{}}\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}}\ \textcolor{stringliteral}{"{}.\ Skipping.\(\backslash\)n"{}},\ current-\/>\doxymbox{\hyperlink{struct_node_a2c9a10f4486a742d8c0a2ead0b7253dd}{data}}.cFileName);}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00195}00195\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00196}00196\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00197}00197\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00198}00198\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ needed\ =\ (size\_t)probe\ +\ 1;}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00199}00199\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}*\ next\_prefix\ =\ malloc(needed);}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00200}00200\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00201}00201\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (next\_prefix)}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00202}00202\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00203}00203\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Format\ the\ prefix\ and\ recurse\ into\ subdirectory\ */}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00204}00204\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ snprintf(next\_prefix,\ needed,\ \textcolor{stringliteral}{"{}\%s\%s\ \ \ "{}},\ prefix,\ is\_last\ ?\ \textcolor{stringliteral}{"{}\ "{}}\ :\ \textcolor{stringliteral}{"{}│"{}});}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00205}00205\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{tree_2main_8c_a8bd8eed13cba2a3a92242f968bf88bad}{list\_dir}}(next\_path,\ next\_prefix,\ file\_count,\ dir\_count);}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00206}00206\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ free(next\_prefix);}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00207}00207\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00208}00208\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00209}00209\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00210}00210\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ fprintf(stderr,\ \textcolor{stringliteral}{"{}Error:\ Memory\ exhausted\ at\ "{}}\ \doxymbox{\hyperlink{group___color_codes_gabf681265909adf3d3e8116c93c0ba179}{YELLOW}}\ \textcolor{stringliteral}{"{}'\%s'"{}}\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}}\ \textcolor{stringliteral}{"{}.\(\backslash\)n"{}},\ current-\/>\doxymbox{\hyperlink{struct_node_a2c9a10f4486a742d8c0a2ead0b7253dd}{data}}.cFileName);}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00211}00211\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00212}00212\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00213}00213\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00214}00214\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00215}00215\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00216}00216\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00217}00217\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Entry\ is\ a\ file\ -\/\ increment\ file\ counter\ */}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00218}00218\ \ \ \ \ \ \ \ \ \ \ \ \ (*file\_count)++;}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00219}00219\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00220}00220\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00221}00221\ \ \ \ \ \ \ \ \ current\ =\ current-\/>\doxymbox{\hyperlink{struct_node_af67b110ca1a258b793bf69d306929b22}{next}};}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00222}00222\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00223}00223\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00224}00224\ \ \ \ \ \textcolor{comment}{/*\ Clean\ up\ linked\ list\ memory\ to\ prevent\ leaks\ */}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00225}00225\ \ \ \ \ \doxymbox{\hyperlink{tree_2main_8c_ab85b64b7d29d0831d9042a7c7336f472}{free\_list}}(head);}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00226}00226\ \}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00227}00227\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00243}\doxymbox{\hyperlink{tree_2main_8c_a3c04138a5bfe5d72780bb7e82a18e627}{00243}}\ \textcolor{keywordtype}{int}\ \doxymbox{\hyperlink{clear_2main_8c_a3c04138a5bfe5d72780bb7e82a18e627}{main}}(\textcolor{keywordtype}{int}\ argc,\ \textcolor{keywordtype}{char}**\ argv)}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00244}00244\ \{}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00245}00245\ \ \ \ \ \textcolor{comment}{/*\ Configure\ console\ to\ use\ UTF-\/8\ encoding\ for\ proper\ Unicode\ display\ */}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00246}00246\ \ \ \ \ SetConsoleOutputCP(CP\_UTF8);}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00247}00247\ \ \ \ \ SetConsoleCP(CP\_UTF8);}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00248}00248\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00249}00249\ \ \ \ \ \textcolor{comment}{/*\ Determine\ target\ path:\ use\ provided\ argument\ or\ default\ to\ current\ directory\ */}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00250}00250\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ path\ =\ (argc\ >\ 1)\ ?\ argv[1]\ :\ \textcolor{stringliteral}{"{}."{}};}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00251}00251\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00252}00252\ \ \ \ \ \textcolor{comment}{/*\ Resolve\ the\ path\ to\ an\ absolute\ full\ path\ using\ Windows\ API\ */}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00253}00253\ \ \ \ \ \textcolor{keywordtype}{char}\ full[MAX\_PATH];}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00254}00254\ \ \ \ \ DWORD\ result\ =\ GetFullPathNameA(path,\ MAX\_PATH,\ full,\ NULL);}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00255}00255\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00256}00256\ \ \ \ \ \textcolor{keywordflow}{if}\ (result\ ==\ 0)}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00257}00257\ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00258}00258\ \ \ \ \ \ \ \ \ fprintf(stderr,\ \textcolor{stringliteral}{"{}Error:\ GetFullPathNameA\ failed\ with\ code\ "{}}\ \doxymbox{\hyperlink{group___color_codes_gabf681265909adf3d3e8116c93c0ba179}{YELLOW}}\ \textcolor{stringliteral}{"{}\%lu"{}}\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}}\ \textcolor{stringliteral}{"{}\(\backslash\)n"{}},\ GetLastError());}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00259}00259\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ EXIT\_FAILURE;}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00260}00260\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00261}00261\ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (result\ >=\ MAX\_PATH)}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00262}00262\ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00263}00263\ \ \ \ \ \ \ \ \ fprintf(stderr,\ \textcolor{stringliteral}{"{}Error:\ The\ full\ path\ is\ longer\ than\ the\ buffer\ size.\(\backslash\)n"{}});}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00264}00264\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ EXIT\_FAILURE;}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00265}00265\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00266}00266\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00267}00267\ \ \ \ \ \textcolor{comment}{/*\ Retrieve\ and\ display\ volume\ information\ (drive\ letter,\ serial,\ filesystem)\ */}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00268}00268\ \ \ \ \ \textcolor{keywordtype}{char}\ root[MAX\_PATH];}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00269}00269\ \ \ \ \ \textcolor{keywordtype}{char}\ type[32];}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00270}00270\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00271}00271\ \ \ \ \ \textcolor{keywordflow}{if}\ (GetVolumePathNameA(full,\ root,\ MAX\_PATH))}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00272}00272\ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00273}00273\ \ \ \ \ \ \ \ \ DWORD\ serial\ =\ 0;}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00274}00274\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00275}00275\ \ \ \ \ \ \ \ \ printf(\textcolor{stringliteral}{"{}Drive:\ \%s\%s\%s\(\backslash\)n"{}},\ \doxymbox{\hyperlink{group___color_codes_gad243f93c16bc4c1d3e0a13b84421d760}{CYAN}},\ root,\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}});}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00276}00276\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00277}00277\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (GetVolumeInformationA(root,\ NULL,\ 0,\ \&serial,\ NULL,\ NULL,\ type,\ \textcolor{keyword}{sizeof}(type)))}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00278}00278\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00279}00279\ \ \ \ \ \ \ \ \ \ \ \ \ printf(\textcolor{stringliteral}{"{}Volume\ Serial\ Number:\ "{}}\ \doxymbox{\hyperlink{group___color_codes_gabf681265909adf3d3e8116c93c0ba179}{YELLOW}}\ \textcolor{stringliteral}{"{}\%04X-\/\%04X"{}}\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}}\ \textcolor{stringliteral}{"{}\(\backslash\)n"{}},\ (UINT)(serial\ >>\ 16),\ (UINT)(serial\ \&\ 0xFFFF));}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00280}00280\ \ \ \ \ \ \ \ \ \ \ \ \ printf(\textcolor{stringliteral}{"{}File\ System\ Type:\ "{}}\ \doxymbox{\hyperlink{group___color_codes_gacfbc006ea433ad708fdee3e82996e721}{GREEN}}\ \textcolor{stringliteral}{"{}\%s"{}}\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}}\ \textcolor{stringliteral}{"{}\(\backslash\)n\(\backslash\)n"{}},\ type);}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00281}00281\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00282}00282\ \ \ \ \ \}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00283}00283\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00284}00284\ \ \ \ \ \textcolor{comment}{/*\ Initialize\ counters\ for\ total\ files\ and\ directories\ discovered\ */}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00285}00285\ \ \ \ \ \textcolor{keywordtype}{int}\ files\ =\ 0;}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00286}00286\ \ \ \ \ \textcolor{keywordtype}{int}\ dirs\ =\ 0;}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00287}00287\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00288}00288\ \ \ \ \ \textcolor{comment}{/*\ Print\ the\ root\ path\ header\ in\ green,\ then\ begin\ recursive\ tree\ traversal\ */}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00289}00289\ \ \ \ \ printf(\doxymbox{\hyperlink{group___color_codes_gacfbc006ea433ad708fdee3e82996e721}{GREEN}}\ \textcolor{stringliteral}{"{}\%s"{}}\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}}\ \textcolor{stringliteral}{"{}\(\backslash\)n"{}},\ full);}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00290}00290\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00291}00291\ \ \ \ \ \textcolor{comment}{/*\ Recursively\ list\ directory\ contents\ and\ build\ the\ tree\ visualization\ */}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00292}00292\ \ \ \ \ \doxymbox{\hyperlink{tree_2main_8c_a8bd8eed13cba2a3a92242f968bf88bad}{list\_dir}}(full,\ \textcolor{stringliteral}{"{}"{}},\ \&files,\ \&dirs);}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00293}00293\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00294}00294\ \ \ \ \ \textcolor{comment}{/*\ Display\ final\ statistics:\ total\ directories\ and\ files\ counted\ */}}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00295}00295\ \ \ \ \ printf(\textcolor{stringliteral}{"{}\(\backslash\)n"{}}\ \doxymbox{\hyperlink{group___color_codes_gabf681265909adf3d3e8116c93c0ba179}{YELLOW}}\ \textcolor{stringliteral}{"{}\%d"{}}\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}}\ \textcolor{stringliteral}{"{}\ directories,\ "{}}\ \doxymbox{\hyperlink{group___color_codes_gabf681265909adf3d3e8116c93c0ba179}{YELLOW}}\ \textcolor{stringliteral}{"{}\%d"{}}\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}}\ \textcolor{stringliteral}{"{}\ files\(\backslash\)n"{}},\ dirs,\ files);}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00296}00296\ \ \ \ \ fflush(stdout);}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00297}00297\ }
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00298}00298\ \ \ \ \ \textcolor{keywordflow}{return}\ EXIT\_SUCCESS;}
+\DoxyCodeLine{\Hypertarget{tree_2main_8c_source_l00299}00299\ \}}
+
+\end{DoxyCode}

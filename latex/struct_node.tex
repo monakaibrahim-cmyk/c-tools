@@ -1,0 +1,53 @@
+\doxysection{Node Struct Reference}
+\hypertarget{struct_node}{}\label{struct_node}\index{Node@{Node}}
+
+
+Linked list node for storing directory entries during traversal.  
+
+
+\doxysubsubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+WIN32\+\_\+\+FIND\+\_\+\+DATA \doxymbox{\hyperlink{struct_node_a2c9a10f4486a742d8c0a2ead0b7253dd}{data}}
+\item 
+struct \doxymbox{\hyperlink{struct_node}{Node}} \texorpdfstring{$\ast$}{*} \doxymbox{\hyperlink{struct_node_af67b110ca1a258b793bf69d306929b22}{next}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Linked list node for storing directory entries during traversal. 
+
+Stores a single file/\+directory entry from Windows Find\+First\+File/\+\+Find\+Next\+File API. Used to batch-\/collect directory contents before processing. 
+
+Definition at line \doxymbox{\hyperlink{tree_2main_8c_source_l00060}{60}} of file \doxymbox{\hyperlink{tree_2main_8c_source}{main.\+c}}.
+
+
+
+\label{doc-variable-members}
+\Hypertarget{struct_node_doc-variable-members}
+\doxysubsection{Field Documentation}
+\Hypertarget{struct_node_a2c9a10f4486a742d8c0a2ead0b7253dd}\index{Node@{Node}!data@{data}}
+\index{data@{data}!Node@{Node}}
+\doxysubsubsection{\texorpdfstring{data}{data}}
+{\footnotesize\ttfamily \label{struct_node_a2c9a10f4486a742d8c0a2ead0b7253dd} 
+WIN32\+\_\+\+FIND\+\_\+\+DATA Node::\+data}
+
+Windows file data (name, attributes, size, etc.) 
+
+Definition at line \doxymbox{\hyperlink{tree_2main_8c_source_l00062}{62}} of file \doxymbox{\hyperlink{tree_2main_8c_source}{main.\+c}}.
+
+\Hypertarget{struct_node_af67b110ca1a258b793bf69d306929b22}\index{Node@{Node}!next@{next}}
+\index{next@{next}!Node@{Node}}
+\doxysubsubsection{\texorpdfstring{next}{next}}
+{\footnotesize\ttfamily \label{struct_node_af67b110ca1a258b793bf69d306929b22} 
+struct \doxymbox{\hyperlink{struct_node}{Node}}\texorpdfstring{$\ast$}{*} Node::\+next}
+
+Pointer to next entry in list 
+
+Definition at line \doxymbox{\hyperlink{tree_2main_8c_source_l00063}{63}} of file \doxymbox{\hyperlink{tree_2main_8c_source}{main.\+c}}.
+
+
+
+The documentation for this struct was generated from the following file:\+\begin{DoxyCompactItemize}
+\item 
+src/\+tree/\+\doxymbox{\hyperlink{tree_2main_8c}{main.\+c}}\end{DoxyCompactItemize}

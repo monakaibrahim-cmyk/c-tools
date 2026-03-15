@@ -1,0 +1,399 @@
+\doxysection{src/\+tree/\+main.c File Reference}
+\hypertarget{tree_2main_8c}{}\label{tree_2main_8c}\index{src/tree/main.c@{src/tree/main.c}}
+
+
+Directory tree visualization utility for Windows.  
+
+
+{\ttfamily \+\#include $<$windows.\+h$>$}\newline
+{\ttfamily \+\#include $<$stdio.\+h$>$}\newline
+{\ttfamily \+\#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \+\#include $<$string.\+h$>$}\newline
+\doxysubsubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \doxymbox{\hyperlink{struct_node}{Node}}
+\begin{DoxyCompactList}\small\item\em Linked list node for storing directory entries during traversal. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\+\#define \doxymbox{\hyperlink{group___color_codes_ga7b3b25cba33b07c303f3060fe41887f6}{BLACK}}~"{}\textbackslash{}x1B\+[30m"{}
+\item 
+\+\#define \doxymbox{\hyperlink{group___color_codes_ga8d23feea868a983c8c2b661e1e16972f}{RED}}~"{}\textbackslash{}x1B\+[31m"{}
+\item 
+\+\#define \doxymbox{\hyperlink{group___color_codes_gacfbc006ea433ad708fdee3e82996e721}{GREEN}}~"{}\textbackslash{}x1B\+[32m"{}
+\item 
+\+\#define \doxymbox{\hyperlink{group___color_codes_gabf681265909adf3d3e8116c93c0ba179}{YELLOW}}~"{}\textbackslash{}x1B\+[33m"{}
+\item 
+\+\#define \doxymbox{\hyperlink{group___color_codes_ga79d10e672abb49ad63eeaa8aaef57c38}{BLUE}}~"{}\textbackslash{}x1B\+[34m"{}
+\item 
+\+\#define \doxymbox{\hyperlink{group___color_codes_ga6f699060902f800f12aaae150f3a708e}{MAGENTA}}~"{}\textbackslash{}x1B\+[35m"{}
+\item 
+\+\#define \doxymbox{\hyperlink{group___color_codes_gad243f93c16bc4c1d3e0a13b84421d760}{CYAN}}~"{}\textbackslash{}x1B\+[36m"{}
+\item 
+\+\#define \doxymbox{\hyperlink{group___color_codes_ga87b537f5fa5c109d3c05c13d6b18f382}{WHITE}}~"{}\textbackslash{}x1B\+[37m"{}
+\item 
+\+\#define \doxymbox{\hyperlink{group___color_codes_gab702106cf3b3e96750b6845ded4e0299}{RESET}}~"{}\textbackslash{}x1B\+[0m"{}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct Node \doxymbox{\hyperlink{tree_2main_8c_a3b09f37e675bcd48a01bf22155996872}{Node}}
+\begin{DoxyCompactList}\small\item\em Linked list node for storing directory entries during traversal. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \doxymbox{\hyperlink{tree_2main_8c_ab85b64b7d29d0831d9042a7c7336f472}{free\+\_\+list}} (\doxymbox{\hyperlink{struct_node}{Node}} \texorpdfstring{$\ast$}{*}head)
+\begin{DoxyCompactList}\small\item\em Frees all nodes in a linked list. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{tree_2main_8c_a8bd8eed13cba2a3a92242f968bf88bad}{list\+\_\+dir}} (const char \texorpdfstring{$\ast$}{*}base, const char \texorpdfstring{$\ast$}{*}prefix, int \texorpdfstring{$\ast$}{*}file\+\_\+count, int \texorpdfstring{$\ast$}{*}dir\+\_\+count)
+\begin{DoxyCompactList}\small\item\em Recursively lists directory contents in tree format. \end{DoxyCompactList}\item 
+int \doxymbox{\hyperlink{tree_2main_8c_a3c04138a5bfe5d72780bb7e82a18e627}{main}} (int argc, char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}argv)
+\begin{DoxyCompactList}\small\item\em Main entry point for the tree command. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Directory tree visualization utility for Windows. 
+
+@description A Windows command-\/line utility that displays the directory tree structure starting from a specified path. It recursively traverses directories and presents the hierarchy in an ASCII tree format, similar to the Unix \textquotesingle{}tree\textquotesingle{} command.
+
+Features:\+
+\begin{DoxyItemize}
+\item Recursive depth-\/first directory traversal
+\item ASCII tree visualization with branch characters
+\item File and directory counting
+\item Volume information display (drive, serial number, filesystem type)
+\item Colored terminal output using ANSI escape sequences
+\end{DoxyItemize}
+
+@usage tree \+[directory\+\_\+path]\+
+
+@examples tree \# Display tree of current directory tree C:\+\textbackslash{}\+Users \# Display tree of specified path
+
+\begin{DoxyNote}{Note}
+Requires Windows API (WIN32\+\_\+\+FIND\+\_\+\+DATA, Find\+First\+File/\+\+Find\+Next\+File)
+\end{DoxyNote}
+\begin{DoxyAuthor}{Author}
+monakaibrahim-\/cmyk 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+1.\+0.\+0 
+\end{DoxyVersion}
+
+
+Definition in file \doxymbox{\hyperlink{tree_2main_8c_source}{main.\+c}}.
+
+
+
+\label{doc-typedef-members}
+\Hypertarget{tree_2main_8c_doc-typedef-members}
+\doxysubsection{Typedef Documentation}
+\Hypertarget{tree_2main_8c_a3b09f37e675bcd48a01bf22155996872}\index{main.c@{main.c}!Node@{Node}}
+\index{Node@{Node}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{Node}{Node}}
+{\footnotesize\ttfamily \label{tree_2main_8c_a3b09f37e675bcd48a01bf22155996872} 
+typedef struct Node Node}
+
+
+
+Linked list node for storing directory entries during traversal. 
+
+Stores a single file/\+directory entry from Windows Find\+First\+File/\+\+Find\+Next\+File API. Used to batch-\/collect directory contents before processing. 
+
+\label{doc-func-members}
+\Hypertarget{tree_2main_8c_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{tree_2main_8c_ab85b64b7d29d0831d9042a7c7336f472}\index{main.c@{main.c}!free\_list@{free\_list}}
+\index{free\_list@{free\_list}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{free\_list()}{free\_list()}}
+{\footnotesize\ttfamily \label{tree_2main_8c_ab85b64b7d29d0831d9042a7c7336f472} 
+void free\+\_\+list (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{struct_node}{Node}} \texorpdfstring{$\ast$}{*}}]{head}{}\end{DoxyParamCaption})}
+
+
+
+Frees all nodes in a linked list. 
+
+Iterates through the list and frees each node to prevent memory leaks. Called after directory processing is complete.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\doxymbox{\texttt{in}}  & {\em head} & Pointer to the head of the list to free \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line \doxymbox{\hyperlink{tree_2main_8c_source_l00074}{74}} of file \doxymbox{\hyperlink{tree_2main_8c_source}{main.\+c}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00075\ \{}
+\DoxyCodeLine{00076\ \ \ \ \ \textcolor{comment}{/*\ Traverse\ the\ linked\ list\ and\ free\ each\ node\ to\ prevent\ memory\ leaks\ */}}
+\DoxyCodeLine{00077\ \ \ \ \ \textcolor{keywordflow}{while}\ (head)}
+\DoxyCodeLine{00078\ \ \ \ \ \{}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_node}{Node}}*\ temp\ =\ head;}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ head\ =\ head-\/>\doxymbox{\hyperlink{struct_node_af67b110ca1a258b793bf69d306929b22}{next}};}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ free(temp);}
+\DoxyCodeLine{00082\ \ \ \ \ \}}
+\DoxyCodeLine{00083\ \}}
+
+\end{DoxyCode}
+
+
+References \doxymbox{\hyperlink{tree_2main_8c_source_l00063}{Node::\+next}}.
+
+\Hypertarget{tree_2main_8c_a8bd8eed13cba2a3a92242f968bf88bad}\index{main.c@{main.c}!list\_dir@{list\_dir}}
+\index{list\_dir@{list\_dir}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{list\_dir()}{list\_dir()}}
+{\footnotesize\ttfamily \label{tree_2main_8c_a8bd8eed13cba2a3a92242f968bf88bad} 
+void list\+\_\+dir (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}}]{base}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{prefix}{, }\item[{int \texorpdfstring{$\ast$}{*}}]{file\+\_\+count}{, }\item[{int \texorpdfstring{$\ast$}{*}}]{dir\+\_\+count}{}\end{DoxyParamCaption})}
+
+
+
+Recursively lists directory contents in tree format. 
+
+Performs depth-\/first traversal starting from base directory. Builds a linked list of entries first, then processes them to display the tree with proper ASCII branch formatting:\+ "{}├──"{} = non-\/last entry "{}└──"{} = last entry "{}│"{} = vertical continuation
+
+
+\begin{DoxyParams}[1]{Parameters}
+\doxymbox{\texttt{in}}  & {\em base} & Base directory path to list \\
+\hline
+\doxymbox{\texttt{in}}  & {\em prefix} & Current prefix string for tree formatting \\
+\hline
+\doxymbox{\texttt{out}}  & {\em file\+\_\+count} & Accumulates total files found \\
+\hline
+\doxymbox{\texttt{out}}  & {\em dir\+\_\+count} & Accumulates total directories found \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line \doxymbox{\hyperlink{tree_2main_8c_source_l00100}{100}} of file \doxymbox{\hyperlink{tree_2main_8c_source}{main.\+c}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00101\ \{}
+\DoxyCodeLine{00102\ \ \ \ \ \textcolor{comment}{/*\ Construct\ search\ pattern:\ base\_path\(\backslash\)*\ to\ enumerate\ all\ entries\ */}}
+\DoxyCodeLine{00103\ \ \ \ \ \textcolor{keywordtype}{char}\ search\_path[MAX\_PATH];}
+\DoxyCodeLine{00104\ \ \ \ \ \textcolor{keywordtype}{int}\ sp\_len\ =\ snprintf(search\_path,\ MAX\_PATH,\ \textcolor{stringliteral}{"{}\%s\(\backslash\)\(\backslash\)*"{}},\ base);}
+\DoxyCodeLine{00105\ }
+\DoxyCodeLine{00106\ \ \ \ \ \textcolor{keywordflow}{if}\ (sp\_len\ <\ 0\ ||\ sp\_len\ >=\ MAX\_PATH)}
+\DoxyCodeLine{00107\ \ \ \ \ \{}
+\DoxyCodeLine{00108\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00109\ \ \ \ \ \}}
+\DoxyCodeLine{00110\ }
+\DoxyCodeLine{00111\ \ \ \ \ \textcolor{comment}{/*\ Initialize\ Windows\ FindFirstFile\ to\ begin\ enumeration\ */}}
+\DoxyCodeLine{00112\ \ \ \ \ WIN32\_FIND\_DATA\ ffd;}
+\DoxyCodeLine{00113\ \ \ \ \ HANDLE\ hFind\ =\ FindFirstFile(search\_path,\ \&ffd);}
+\DoxyCodeLine{00114\ }
+\DoxyCodeLine{00115\ \ \ \ \ \textcolor{keywordflow}{if}\ (hFind\ ==\ INVALID\_HANDLE\_VALUE)}
+\DoxyCodeLine{00116\ \ \ \ \ \{}
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00118\ \ \ \ \ \}}
+\DoxyCodeLine{00119\ }
+\DoxyCodeLine{00120\ \ \ \ \ \textcolor{comment}{/*\ Build\ a\ linked\ list\ of\ directory\ entries\ first\ (batch\ collection)}}
+\DoxyCodeLine{00121\ \textcolor{comment}{\ \ \ \ \ *\ This\ separates\ enumeration\ from\ processing,\ allowing\ sorted\ output\ */}}
+\DoxyCodeLine{00122\ \ \ \ \ \doxymbox{\hyperlink{struct_node}{Node}}\ *head\ =\ NULL,\ *tail\ =\ NULL;}
+\DoxyCodeLine{00123\ }
+\DoxyCodeLine{00124\ \ \ \ \ \textcolor{keywordflow}{do}}
+\DoxyCodeLine{00125\ \ \ \ \ \{}
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Skip\ special\ directory\ references:\ "{}."{}\ (current)\ and\ "{}.."{}\ (parent)\ */}}
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (strcmp(ffd.cFileName,\ \textcolor{stringliteral}{"{}."{}})\ ==\ 0\ ||\ strcmp(ffd.cFileName,\ \textcolor{stringliteral}{"{}.."{}})\ ==\ 0)}
+\DoxyCodeLine{00128\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{continue};}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00131\ }
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Allocate\ new\ node\ to\ store\ this\ directory\ entry\ */}}
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{struct_node}{Node}}*\ new\_node\ =\ (\doxymbox{\hyperlink{struct_node}{Node}}*)malloc(\textcolor{keyword}{sizeof}(\doxymbox{\hyperlink{struct_node}{Node}}));}
+\DoxyCodeLine{00134\ }
+\DoxyCodeLine{00135\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!new\_node)}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00137\ \ \ \ \ \ \ \ \ \ \ \ \ fprintf(stderr,\ \textcolor{stringliteral}{"{}Error:\ Memory\ exhausted\ while\ enumerating\ "{}}\ \doxymbox{\hyperlink{group___color_codes_gabf681265909adf3d3e8116c93c0ba179}{YELLOW}}\ \textcolor{stringliteral}{"{}'\%s'\ "{}}\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}}\ \textcolor{stringliteral}{"{}.\ Output\ may\ be\ incomplete.\(\backslash\)n"{}},\ base);}
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00140\ }
+\DoxyCodeLine{00141\ \ \ \ \ \ \ \ \ new\_node-\/>\doxymbox{\hyperlink{struct_node_a2c9a10f4486a742d8c0a2ead0b7253dd}{data}}\ =\ ffd;}
+\DoxyCodeLine{00142\ \ \ \ \ \ \ \ \ new\_node-\/>\doxymbox{\hyperlink{struct_node_af67b110ca1a258b793bf69d306929b22}{next}}\ =\ NULL;}
+\DoxyCodeLine{00143\ }
+\DoxyCodeLine{00144\ \ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Append\ to\ linked\ list\ (tail\ insertion\ for\ O(1)\ append)\ */}}
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (!head)}
+\DoxyCodeLine{00146\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ \ \ \ \ head\ =\ tail\ =\ new\_node;}
+\DoxyCodeLine{00148\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00149\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00150\ \ \ \ \ \ \ \ \ \{\ }
+\DoxyCodeLine{00151\ \ \ \ \ \ \ \ \ \ \ \ \ tail-\/>next\ =\ new\_node;}
+\DoxyCodeLine{00152\ \ \ \ \ \ \ \ \ \ \ \ \ tail\ =\ new\_node;}
+\DoxyCodeLine{00153\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00154\ \ \ \ \ \}}
+\DoxyCodeLine{00155\ \ \ \ \ \textcolor{keywordflow}{while}\ (FindNextFile(hFind,\ \&ffd));}
+\DoxyCodeLine{00156\ \ \ \ \ }
+\DoxyCodeLine{00157\ \ \ \ \ \textcolor{comment}{/*\ Close\ the\ find\ handle\ -\/\ no\ longer\ needed\ after\ enumeration\ */}}
+\DoxyCodeLine{00158\ \ \ \ \ FindClose(hFind);}
+\DoxyCodeLine{00159\ }
+\DoxyCodeLine{00160\ \ \ \ \ \textcolor{comment}{/*\ Process\ each\ entry\ in\ the\ linked\ list\ and\ display\ tree\ structure\ */}}
+\DoxyCodeLine{00161\ \ \ \ \ \doxymbox{\hyperlink{struct_node}{Node}}*\ current\ =\ head;}
+\DoxyCodeLine{00162\ }
+\DoxyCodeLine{00163\ \ \ \ \ \textcolor{keywordflow}{while}\ (current)}
+\DoxyCodeLine{00164\ \ \ \ \ \{}
+\DoxyCodeLine{00165\ \ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Determine\ if\ this\ is\ the\ last\ entry\ for\ proper\ tree\ branch\ formatting:}}
+\DoxyCodeLine{00166\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ *\ ├──\ =\ not\ last,\ └──\ =\ last\ */}}
+\DoxyCodeLine{00167\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ is\_last\ =\ (current-\/>\doxymbox{\hyperlink{struct_node_af67b110ca1a258b793bf69d306929b22}{next}}\ ==\ NULL);}
+\DoxyCodeLine{00168\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Print\ the\ tree\ branch\ prefix\ +\ filename\ in\ green\ color\ */}}
+\DoxyCodeLine{00170\ \ \ \ \ \ \ \ \ printf(\textcolor{stringliteral}{"{}\%s\%s\ "{}}\ \doxymbox{\hyperlink{group___color_codes_gacfbc006ea433ad708fdee3e82996e721}{GREEN}}\ \textcolor{stringliteral}{"{}\%s"{}}\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}}\ \textcolor{stringliteral}{"{}\(\backslash\)n"{}},\ prefix,\ is\_last\ ?\ \textcolor{stringliteral}{"{}└──"{}}\ :\ \textcolor{stringliteral}{"{}├──"{}},\ current-\/>\doxymbox{\hyperlink{struct_node_a2c9a10f4486a742d8c0a2ead0b7253dd}{data}}.cFileName);}
+\DoxyCodeLine{00171\ }
+\DoxyCodeLine{00172\ \ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Check\ if\ entry\ is\ a\ directory\ (vs\ file)\ using\ Windows\ attribute\ flags\ */}}
+\DoxyCodeLine{00173\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (current-\/>\doxymbox{\hyperlink{struct_node_a2c9a10f4486a742d8c0a2ead0b7253dd}{data}}.dwFileAttributes\ \&\ FILE\_ATTRIBUTE\_DIRECTORY)}
+\DoxyCodeLine{00174\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00175\ \ \ \ \ \ \ \ \ \ \ \ \ (*dir\_count)++;}
+\DoxyCodeLine{00176\ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00177\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Construct\ full\ path\ for\ recursive\ descent\ into\ subdirectory\ */}}
+\DoxyCodeLine{00178\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}\ next\_path[MAX\_PATH];}
+\DoxyCodeLine{00179\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ path\_len\ =\ snprintf(next\_path,\ MAX\_PATH,\ \textcolor{stringliteral}{"{}\%s\(\backslash\)\(\backslash\)\%s"{}},\ base,\ current-\/>\doxymbox{\hyperlink{struct_node_a2c9a10f4486a742d8c0a2ead0b7253dd}{data}}.cFileName);}
+\DoxyCodeLine{00180\ }
+\DoxyCodeLine{00181\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (path\_len\ <\ 0\ ||\ path\_len\ >=\ MAX\_PATH)}
+\DoxyCodeLine{00182\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00183\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ fprintf(stderr,\ \textcolor{stringliteral}{"{}Error:\ Path\ too\ long:\ "{}}\ \doxymbox{\hyperlink{group___color_codes_gabf681265909adf3d3e8116c93c0ba179}{YELLOW}}\ \textcolor{stringliteral}{"{}'\%s'"{}}\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}}\ \textcolor{stringliteral}{"{}.\ Skipping.\(\backslash\)n"{}},\ current-\/>\doxymbox{\hyperlink{struct_node_a2c9a10f4486a742d8c0a2ead0b7253dd}{data}}.cFileName);}
+\DoxyCodeLine{00184\ \ \ \ \ \ \ \ \ \ \ \ \ \}\ }
+\DoxyCodeLine{00185\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00186\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00187\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Calculate\ prefix\ for\ next\ recursion\ level:}}
+\DoxyCodeLine{00188\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *\ -\/\ If\ last\ entry:\ use\ spaces\ "{}\ \ \ "{}\ (no\ vertical\ branch)}}
+\DoxyCodeLine{00189\ \textcolor{comment}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ *\ -\/\ If\ not\ last:\ use\ "{}│"{}\ (vertical\ branch\ continues)\ */}}
+\DoxyCodeLine{00190\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ probe\ =\ snprintf(NULL,\ 0,\ \textcolor{stringliteral}{"{}\%s\%s\ \ \ "{}},\ prefix,\ is\_last\ ?\ \textcolor{stringliteral}{"{}\ "{}}\ :\ \textcolor{stringliteral}{"{}│"{}});}
+\DoxyCodeLine{00191\ }
+\DoxyCodeLine{00192\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (probe\ <\ 0)}
+\DoxyCodeLine{00193\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00194\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ fprintf(stderr,\ \textcolor{stringliteral}{"{}Error:\ Encoding\ failed\ for\ prefix\ at\ "{}}\ \doxymbox{\hyperlink{group___color_codes_gabf681265909adf3d3e8116c93c0ba179}{YELLOW}}\ \textcolor{stringliteral}{"{}'\%s'"{}}\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}}\ \textcolor{stringliteral}{"{}.\ Skipping.\(\backslash\)n"{}},\ current-\/>\doxymbox{\hyperlink{struct_node_a2c9a10f4486a742d8c0a2ead0b7253dd}{data}}.cFileName);}
+\DoxyCodeLine{00195\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00196\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00197\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ needed\ =\ (size\_t)probe\ +\ 1;}
+\DoxyCodeLine{00199\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}*\ next\_prefix\ =\ malloc(needed);}
+\DoxyCodeLine{00200\ }
+\DoxyCodeLine{00201\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (next\_prefix)}
+\DoxyCodeLine{00202\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00203\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Format\ the\ prefix\ and\ recurse\ into\ subdirectory\ */}}
+\DoxyCodeLine{00204\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ snprintf(next\_prefix,\ needed,\ \textcolor{stringliteral}{"{}\%s\%s\ \ \ "{}},\ prefix,\ is\_last\ ?\ \textcolor{stringliteral}{"{}\ "{}}\ :\ \textcolor{stringliteral}{"{}│"{}});}
+\DoxyCodeLine{00205\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \doxymbox{\hyperlink{tree_2main_8c_a8bd8eed13cba2a3a92242f968bf88bad}{list\_dir}}(next\_path,\ next\_prefix,\ file\_count,\ dir\_count);}
+\DoxyCodeLine{00206\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ free(next\_prefix);}
+\DoxyCodeLine{00207\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00208\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00210\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ fprintf(stderr,\ \textcolor{stringliteral}{"{}Error:\ Memory\ exhausted\ at\ "{}}\ \doxymbox{\hyperlink{group___color_codes_gabf681265909adf3d3e8116c93c0ba179}{YELLOW}}\ \textcolor{stringliteral}{"{}'\%s'"{}}\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}}\ \textcolor{stringliteral}{"{}.\(\backslash\)n"{}},\ current-\/>\doxymbox{\hyperlink{struct_node_a2c9a10f4486a742d8c0a2ead0b7253dd}{data}}.cFileName);}
+\DoxyCodeLine{00211\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00212\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00213\ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00214\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00215\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00216\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00217\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{/*\ Entry\ is\ a\ file\ -\/\ increment\ file\ counter\ */}}
+\DoxyCodeLine{00218\ \ \ \ \ \ \ \ \ \ \ \ \ (*file\_count)++;}
+\DoxyCodeLine{00219\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00220\ }
+\DoxyCodeLine{00221\ \ \ \ \ \ \ \ \ current\ =\ current-\/>\doxymbox{\hyperlink{struct_node_af67b110ca1a258b793bf69d306929b22}{next}};}
+\DoxyCodeLine{00222\ \ \ \ \ \}}
+\DoxyCodeLine{00223\ }
+\DoxyCodeLine{00224\ \ \ \ \ \textcolor{comment}{/*\ Clean\ up\ linked\ list\ memory\ to\ prevent\ leaks\ */}}
+\DoxyCodeLine{00225\ \ \ \ \ \doxymbox{\hyperlink{tree_2main_8c_ab85b64b7d29d0831d9042a7c7336f472}{free\_list}}(head);}
+\DoxyCodeLine{00226\ \}}
+
+\end{DoxyCode}
+
+
+References \doxymbox{\hyperlink{tree_2main_8c_source_l00062}{Node::\+data}}, \doxymbox{\hyperlink{tree_2main_8c_source_l00074}{free\+\_\+list()}}, \doxymbox{\hyperlink{touch_2main_8c_source_l00076}{GREEN}}, \doxymbox{\hyperlink{tree_2main_8c_source_l00100}{list\+\_\+dir()}}, \doxymbox{\hyperlink{tree_2main_8c_source_l00063}{Node::\+next}}, \doxymbox{\hyperlink{grep_2main_8c_source_l00005}{RESET}}, and \doxymbox{\hyperlink{touch_2main_8c_source_l00077}{YELLOW}}.
+
+\Hypertarget{tree_2main_8c_a3c04138a5bfe5d72780bb7e82a18e627}\index{main.c@{main.c}!main@{main}}
+\index{main@{main}!main.c@{main.c}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily \label{tree_2main_8c_a3c04138a5bfe5d72780bb7e82a18e627} 
+int main (\begin{DoxyParamCaption}\item[{int}]{argc}{, }\item[{char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{argv}{}\end{DoxyParamCaption})}
+
+
+
+Main entry point for the tree command. 
+
+Sets up UTF-\/8 console encoding, resolves the target path, displays volume information, then initiates recursive directory traversal to visualize the tree structure.
+
+
+\begin{DoxyParams}[1]{Parameters}
+\doxymbox{\texttt{in}}  & {\em argc} & Number of command-\/line arguments \\
+\hline
+\doxymbox{\texttt{in}}  & {\em argv} & Argument vector:\+
+\begin{DoxyItemize}
+\item argv\+[0]\+:\+ Program name
+\item argv\+[1]\+:\+ Optional directory path (default:\+ "{}."{})
+\end{DoxyItemize}\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+EXIT\+\_\+\+SUCCESS on successful completion 
+
+EXIT\+\_\+\+FAILURE on error (invalid path, resolution failure, etc.) 
+\end{DoxyReturn}
+
+
+Definition at line \doxymbox{\hyperlink{tree_2main_8c_source_l00243}{243}} of file \doxymbox{\hyperlink{tree_2main_8c_source}{main.\+c}}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00244\ \{}
+\DoxyCodeLine{00245\ \ \ \ \ \textcolor{comment}{/*\ Configure\ console\ to\ use\ UTF-\/8\ encoding\ for\ proper\ Unicode\ display\ */}}
+\DoxyCodeLine{00246\ \ \ \ \ SetConsoleOutputCP(CP\_UTF8);}
+\DoxyCodeLine{00247\ \ \ \ \ SetConsoleCP(CP\_UTF8);}
+\DoxyCodeLine{00248\ }
+\DoxyCodeLine{00249\ \ \ \ \ \textcolor{comment}{/*\ Determine\ target\ path:\ use\ provided\ argument\ or\ default\ to\ current\ directory\ */}}
+\DoxyCodeLine{00250\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ path\ =\ (argc\ >\ 1)\ ?\ argv[1]\ :\ \textcolor{stringliteral}{"{}."{}};}
+\DoxyCodeLine{00251\ }
+\DoxyCodeLine{00252\ \ \ \ \ \textcolor{comment}{/*\ Resolve\ the\ path\ to\ an\ absolute\ full\ path\ using\ Windows\ API\ */}}
+\DoxyCodeLine{00253\ \ \ \ \ \textcolor{keywordtype}{char}\ full[MAX\_PATH];}
+\DoxyCodeLine{00254\ \ \ \ \ DWORD\ result\ =\ GetFullPathNameA(path,\ MAX\_PATH,\ full,\ NULL);}
+\DoxyCodeLine{00255\ }
+\DoxyCodeLine{00256\ \ \ \ \ \textcolor{keywordflow}{if}\ (result\ ==\ 0)}
+\DoxyCodeLine{00257\ \ \ \ \ \{}
+\DoxyCodeLine{00258\ \ \ \ \ \ \ \ \ fprintf(stderr,\ \textcolor{stringliteral}{"{}Error:\ GetFullPathNameA\ failed\ with\ code\ "{}}\ \doxymbox{\hyperlink{group___color_codes_gabf681265909adf3d3e8116c93c0ba179}{YELLOW}}\ \textcolor{stringliteral}{"{}\%lu"{}}\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}}\ \textcolor{stringliteral}{"{}\(\backslash\)n"{}},\ GetLastError());}
+\DoxyCodeLine{00259\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ EXIT\_FAILURE;}
+\DoxyCodeLine{00260\ \ \ \ \ \}}
+\DoxyCodeLine{00261\ \ \ \ \ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (result\ >=\ MAX\_PATH)}
+\DoxyCodeLine{00262\ \ \ \ \ \{}
+\DoxyCodeLine{00263\ \ \ \ \ \ \ \ \ fprintf(stderr,\ \textcolor{stringliteral}{"{}Error:\ The\ full\ path\ is\ longer\ than\ the\ buffer\ size.\(\backslash\)n"{}});}
+\DoxyCodeLine{00264\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ EXIT\_FAILURE;}
+\DoxyCodeLine{00265\ \ \ \ \ \}}
+\DoxyCodeLine{00266\ }
+\DoxyCodeLine{00267\ \ \ \ \ \textcolor{comment}{/*\ Retrieve\ and\ display\ volume\ information\ (drive\ letter,\ serial,\ filesystem)\ */}}
+\DoxyCodeLine{00268\ \ \ \ \ \textcolor{keywordtype}{char}\ root[MAX\_PATH];}
+\DoxyCodeLine{00269\ \ \ \ \ \textcolor{keywordtype}{char}\ type[32];}
+\DoxyCodeLine{00270\ }
+\DoxyCodeLine{00271\ \ \ \ \ \textcolor{keywordflow}{if}\ (GetVolumePathNameA(full,\ root,\ MAX\_PATH))}
+\DoxyCodeLine{00272\ \ \ \ \ \{}
+\DoxyCodeLine{00273\ \ \ \ \ \ \ \ \ DWORD\ serial\ =\ 0;}
+\DoxyCodeLine{00274\ }
+\DoxyCodeLine{00275\ \ \ \ \ \ \ \ \ printf(\textcolor{stringliteral}{"{}Drive:\ \%s\%s\%s\(\backslash\)n"{}},\ \doxymbox{\hyperlink{group___color_codes_gad243f93c16bc4c1d3e0a13b84421d760}{CYAN}},\ root,\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}});}
+\DoxyCodeLine{00276\ }
+\DoxyCodeLine{00277\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (GetVolumeInformationA(root,\ NULL,\ 0,\ \&serial,\ NULL,\ NULL,\ type,\ \textcolor{keyword}{sizeof}(type)))}
+\DoxyCodeLine{00278\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00279\ \ \ \ \ \ \ \ \ \ \ \ \ printf(\textcolor{stringliteral}{"{}Volume\ Serial\ Number:\ "{}}\ \doxymbox{\hyperlink{group___color_codes_gabf681265909adf3d3e8116c93c0ba179}{YELLOW}}\ \textcolor{stringliteral}{"{}\%04X-\/\%04X"{}}\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}}\ \textcolor{stringliteral}{"{}\(\backslash\)n"{}},\ (UINT)(serial\ >>\ 16),\ (UINT)(serial\ \&\ 0xFFFF));}
+\DoxyCodeLine{00280\ \ \ \ \ \ \ \ \ \ \ \ \ printf(\textcolor{stringliteral}{"{}File\ System\ Type:\ "{}}\ \doxymbox{\hyperlink{group___color_codes_gacfbc006ea433ad708fdee3e82996e721}{GREEN}}\ \textcolor{stringliteral}{"{}\%s"{}}\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}}\ \textcolor{stringliteral}{"{}\(\backslash\)n\(\backslash\)n"{}},\ type);}
+\DoxyCodeLine{00281\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00282\ \ \ \ \ \}}
+\DoxyCodeLine{00283\ }
+\DoxyCodeLine{00284\ \ \ \ \ \textcolor{comment}{/*\ Initialize\ counters\ for\ total\ files\ and\ directories\ discovered\ */}}
+\DoxyCodeLine{00285\ \ \ \ \ \textcolor{keywordtype}{int}\ files\ =\ 0;}
+\DoxyCodeLine{00286\ \ \ \ \ \textcolor{keywordtype}{int}\ dirs\ =\ 0;}
+\DoxyCodeLine{00287\ }
+\DoxyCodeLine{00288\ \ \ \ \ \textcolor{comment}{/*\ Print\ the\ root\ path\ header\ in\ green,\ then\ begin\ recursive\ tree\ traversal\ */}}
+\DoxyCodeLine{00289\ \ \ \ \ printf(\doxymbox{\hyperlink{group___color_codes_gacfbc006ea433ad708fdee3e82996e721}{GREEN}}\ \textcolor{stringliteral}{"{}\%s"{}}\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}}\ \textcolor{stringliteral}{"{}\(\backslash\)n"{}},\ full);}
+\DoxyCodeLine{00290\ }
+\DoxyCodeLine{00291\ \ \ \ \ \textcolor{comment}{/*\ Recursively\ list\ directory\ contents\ and\ build\ the\ tree\ visualization\ */}}
+\DoxyCodeLine{00292\ \ \ \ \ \doxymbox{\hyperlink{tree_2main_8c_a8bd8eed13cba2a3a92242f968bf88bad}{list\_dir}}(full,\ \textcolor{stringliteral}{"{}"{}},\ \&files,\ \&dirs);}
+\DoxyCodeLine{00293\ }
+\DoxyCodeLine{00294\ \ \ \ \ \textcolor{comment}{/*\ Display\ final\ statistics:\ total\ directories\ and\ files\ counted\ */}}
+\DoxyCodeLine{00295\ \ \ \ \ printf(\textcolor{stringliteral}{"{}\(\backslash\)n"{}}\ \doxymbox{\hyperlink{group___color_codes_gabf681265909adf3d3e8116c93c0ba179}{YELLOW}}\ \textcolor{stringliteral}{"{}\%d"{}}\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}}\ \textcolor{stringliteral}{"{}\ directories,\ "{}}\ \doxymbox{\hyperlink{group___color_codes_gabf681265909adf3d3e8116c93c0ba179}{YELLOW}}\ \textcolor{stringliteral}{"{}\%d"{}}\ \doxymbox{\hyperlink{grep_2main_8c_ab702106cf3b3e96750b6845ded4e0299}{RESET}}\ \textcolor{stringliteral}{"{}\ files\(\backslash\)n"{}},\ dirs,\ files);}
+\DoxyCodeLine{00296\ \ \ \ \ fflush(stdout);}
+\DoxyCodeLine{00297\ }
+\DoxyCodeLine{00298\ \ \ \ \ \textcolor{keywordflow}{return}\ EXIT\_SUCCESS;}
+\DoxyCodeLine{00299\ \}}
+
+\end{DoxyCode}
+
+
+References \doxymbox{\hyperlink{touch_2main_8c_source_l00080}{CYAN}}, \doxymbox{\hyperlink{touch_2main_8c_source_l00076}{GREEN}}, \doxymbox{\hyperlink{tree_2main_8c_source_l00100}{list\+\_\+dir()}}, \doxymbox{\hyperlink{grep_2main_8c_source_l00005}{RESET}}, and \doxymbox{\hyperlink{touch_2main_8c_source_l00077}{YELLOW}}.
+
