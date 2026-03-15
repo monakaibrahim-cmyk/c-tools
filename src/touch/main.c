@@ -23,8 +23,6 @@
  * @endcode
  */
 
- #define _CRT_SECURE_NO_WARNINGS
-
 #include <windows.h>
 #include <direct.h>
 #include <stdio.h>
@@ -36,12 +34,40 @@
 #include <errno.h>
 
 /**
- * @defgroup ColorCodes ANSI Color Codes
- * @brief Terminal escape sequences for colored output
+ * @defgroup SafeString Safe String Macros
+ * @brief Compiler-agnostic safe string operation macros
  *
- * These macros define ANSI escape sequences for formatting terminal
- * output with colors and text styling.
+ * Provides macros that wrap secure versions of string functions.
+ * Uses MSVC _s variants when compiled with MSVC, otherwise falls
+ * back to standard C99/C11 functions with manual null-termination.
  *
+ * @{
+ */
+
+/* MSVC: Use the _s variants which provide bounds checking */
+#ifdef _MSC_VER
+    #define SAFE_STRCPY(dst, dsz, src)       strcpy_s(dst, dsz, src)
+    #define SAFE_STRNCPY(dst, src, n)        strncpy_s(dst, sizeof(dst), src, n)
+    #define SAFE_STRNCAT(dst, dsz, src)      strncat_s(dst, dsz, src, _TRUNCATE)
+    #define SAFE_SSCANF(buf, fmt, ...)       sscanf_s(buf, fmt, __VA_ARGS__)
+#else
+    /* MinGW/GCC/Clang: Manual null-termination to prevent buffer overflow */
+    #define SAFE_STRCPY(dst, dsz, src)      \
+    do {                                    \
+            strncpy(dst, src, dsz - 1);     \
+            (dst)[dsz - 1] = '\0';          \
+    } while(0)
+
+    #define SAFE_STRNCPY(dst, src, n)        strncpy(dst, src, n)
+    #define SAFE_STRNCAT(dst, dsz, src)      strncat(dst, src, (dsz) - strlen(dst) - 1)
+    #define SAFE_SSCANF(buf, fmt, ...)       sscanf(buf, fmt, __VA_ARGS__)
+#endif
+
+ /** @} */
+
+/**
+ * @defgroup ColorCodes Terminal Color Escape Sequences
+ * @brief ANSI escape codes for colored console output
  * @{
  */
 #define RESET   "\x1B[0m"   /**< Reset all formatting */
@@ -58,8 +84,8 @@
 /**
  * @brief Command-line options structure
  *
- * This structure holds all configurable options that can be passed
- * via the command line to modify the behavior of the touch utility.
+ * Holds configurable options passed via command line to modify
+ * touch utility behavior.
  */
 typedef struct
 {
@@ -104,7 +130,7 @@ int recursive_mkdir(const char* path)
     size_t length;
 
     /* Copy the input path to a temporary buffer to avoid modifying the original */
-    strncpy(temp, path, MAX_PATH);
+    SAFE_STRNCPY(temp, path, MAX_PATH);
     length = strlen(temp);
     
     /* Normalize all path separators to backslashes for Windows */
@@ -227,7 +253,7 @@ void _timestamps(HANDLE hFile, Options* options)
     else if (options->_timestamp)
     {
         /* Parse the explicit timestamp string (format: YYYYMMDDhhmm) */
-        sscanf(
+        SAFE_SSCANF(
             options->_timestamp,
             "%04hd%02hd%02hd%02hd%02hd",
             &system_time.wYear,
@@ -373,6 +399,7 @@ int main(int argc, char** argv)
         else if (strcmp(argv[i], "-d") == 0 || strncmp(argv[i], "--date=", 7) == 0)
         {
 			char *value = (argv[i][0] == '-') ? (i + 1 < argc ? argv[++i] : NULL) : (argv[i] + 7);
+            size_t length = strlen(value) + 1;
 
 			if (value == NULL)
             {
@@ -388,13 +415,13 @@ int main(int argc, char** argv)
             }
 
 			/* Allocate and copy the date string */
-			if ((options->_date = malloc(strlen(value) + 1)) == NULL)
+			if ((options->_date = malloc(length)) == NULL)
             {
                 status = 1;
                 goto FAILED_MEMORY_ALLOCATION;
             }
-
-			strcpy(options->_date, value);
+        
+			SAFE_STRCPY(options->_date, length, value);
 		}
         /* -h/--no-dereference: Affect symbolic link instead of target */
         else if ((strcmp(argv[i], "-h") == 0) || (strcmp(argv[i], "--no-dereference") == 0))
@@ -405,6 +432,7 @@ int main(int argc, char** argv)
         else if (strcmp(argv[i], "-r") == 0 || strncmp(argv[i], "--reference=", 12) == 0)
         {
 			char *value = (argv[i][0] == '-') ? (i + 1 < argc ? argv[++i] : NULL) : (argv[i] + 12);
+            size_t length = strlen(value) + 1;
 
 			if (value == NULL)
             {
@@ -420,13 +448,13 @@ int main(int argc, char** argv)
             }
 				
 			/* Allocate and copy the reference file path */
-			if ((options->_ref_file = malloc(strlen(value) + 1)) == NULL)
+			if ((options->_ref_file = malloc(length)) == NULL)
             {
                 status = 1;
                 goto FAILED_MEMORY_ALLOCATION;
             }
 
-			strcpy(options->_ref_file, value);
+			SAFE_STRCPY(options->_ref_file, length, value);
 		}
         /* -t: Use specific timestamp (format: [[CC]YY]MMDDhhmm[.ss]) */
         else if (strcmp(argv[i], "-t") == 0)
@@ -439,7 +467,14 @@ int main(int argc, char** argv)
 			}
 
             char* value = argv[++i];
-            options->_timestamp = malloc(strlen(value) + 1);
+            size_t length = strlen(value) + 1;
+
+            if (options->_timestamp)
+            {
+                free(options->_timestamp);
+            }
+
+            options->_timestamp = malloc(length);
 
             if (!options->_timestamp)
             {
@@ -447,7 +482,7 @@ int main(int argc, char** argv)
                 goto FAILED_MEMORY_ALLOCATION;
             }
 
-            strcpy(options->_timestamp, value);
+            SAFE_STRCPY(options->_timestamp, length, value);
         }
         /* --help: Display help information */
         else if (strcmp(argv[i], "--help") == 0)
@@ -482,15 +517,15 @@ int main(int argc, char** argv)
     if (_absolute(target))
     {
         /* Use the target path directly for absolute paths */
-        strncpy(path, target, MAX_PATH - 1);
+        SAFE_STRNCPY(path, target, MAX_PATH - 1);
         path[sizeof(MAX_PATH) - 1] = '\0';
     }
     else
     {
         /* Get current directory and append the relative path */
         GetCurrentDirectory(MAX_PATH, path);
-        strncat(path, "\\", MAX_PATH - strlen(path) - 1);
-        strncat(path, target, MAX_PATH - strlen(path) - 1);
+        SAFE_STRNCAT(path, MAX_PATH, "\\");
+        SAFE_STRNCAT(path, MAX_PATH, target);
     }
 
     /* Normalize all forward slashes to backslashes for Windows */
@@ -504,7 +539,7 @@ int main(int argc, char** argv)
 
     /* Extract directory portion from the full path */
     char dir[MAX_PATH];
-    strncpy(dir, path, MAX_PATH - 1);
+    SAFE_STRNCPY(dir, path, MAX_PATH - 1);
 
     /* Find the last backslash to separate directory from filename */
     char* slash = strrchr(dir, '\\');
